@@ -1,0 +1,52 @@
++--------+----------+--------------------------+---------------------+------------------------------------------------------------------------+------------------------------+
+| Domain | Method   | URI                      | Name                | Action                                                                 | Middleware                   |
++--------+----------+--------------------------+---------------------+------------------------------------------------------------------------+------------------------------+
+|        | GET|HEAD | /                        |                     | Closure                                                                | web                          |
+|        | GET|HEAD | account                  | account.index       | App\Http\Controllers\AccountController@index                           | web,verified                 |
+|        | POST     | account/address          | account/address     | App\Http\Controllers\AccountController@address                         | web,verified                 |
+|        | GET|HEAD | account/address          | account/address     | App\Http\Controllers\AccountController@address                         | web,verified                 |
+|        | POST     | account/edit             | account.edit        | App\Http\Controllers\AccountController@edit                            | web,verified                 |
+|        | GET|HEAD | account/edit             | account.edit        | App\Http\Controllers\AccountController@edit                            | web,verified                 |
+|        | POST     | account/invoice          | account/invoice     | App\Http\Controllers\AccountController@invoice                         | web,verified                 |
+|        | GET|HEAD | account/invoice          | account/invoice     | App\Http\Controllers\AccountController@invoice                         | web,verified                 |
+|        | POST     | account/order            | account/order       | App\Http\Controllers\AccountController@order                           | web,verified                 |
+|        | GET|HEAD | account/order            | account/order       | App\Http\Controllers\AccountController@order                           | web,verified                 |
+|        | POST     | account/quotation        | account/quotation   | App\Http\Controllers\AccountController@quotation                       | web,verified                 |
+|        | GET|HEAD | account/quotation        | account/quotation   | App\Http\Controllers\AccountController@quotation                       | web,verified                 |
+|        | POST     | account/update           | account.update      | App\Http\Controllers\AccountController@update                          | web,verified                 |
+|        | GET|HEAD | account/update           | account.update      | App\Http\Controllers\AccountController@update                          | web,verified                 |
+|        | GET|HEAD | api/user                 |                     | Closure                                                                | api,auth:api                 |
+|        | POST     | email/resend             | verification.resend | App\Http\Controllers\Auth\VerificationController@resend                | web,auth,throttle:6,1        |
+|        | GET|HEAD | email/verify             | verification.notice | App\Http\Controllers\Auth\VerificationController@show                  | web,auth                     |
+|        | GET|HEAD | email/verify/{id}/{hash} | verification.verify | App\Http\Controllers\Auth\VerificationController@verify                | web,auth,signed,throttle:6,1 |
+|        | GET|HEAD | entry                    |                     | App\Http\Controllers\UserinformationController@entry                   | web                          |
+|        | POST     | entry                    |                     | App\Http\Controllers\UserinformationController@entry                   | web                          |
+|        | POST     | entryform                |                     | App\Http\Controllers\UserinformationController@entryform               | web                          |
+|        | GET|HEAD | entryform                |                     | App\Http\Controllers\UserinformationController@entryform               | web                          |
+|        | POST     | generate_invoice_pdf     |                     | App\Http\Controllers\InvoiceController@generate_invoice_pdf            | web                          |
+|        | POST     | generate_quotation_pdf   |                     | App\Http\Controllers\QuotationController@generate_quotation_pdf        | web                          |
+|        | GET|HEAD | home                     | home                | App\Http\Controllers\HomeController@index                              | web,auth                     |
+|        | POST     | invoice                  | invoice             | App\Http\Controllers\InvoiceController@invoice                         | web,verified                 |
+|        | POST     | invoice_confirm          |                     | App\Http\Controllers\UserinformationController@invoice_confirm         | web                          |
+|        | GET|HEAD | invoice_confirm          |                     | App\Http\Controllers\UserinformationController@invoice_confirm         | web                          |
+|        | POST     | invoice_entry            |                     | App\Http\Controllers\UserinformationController@invoice_entry           | web                          |
+|        | POST     | invoice_entry_and_go     |                     | App\Http\Controllers\UserinformationController@invoice_entry_and_go    | web                          |
+|        | POST     | login                    |                     | App\Http\Controllers\Auth\LoginController@login                        | web,guest                    |
+|        | GET|HEAD | login                    | login               | App\Http\Controllers\Auth\LoginController@showLoginForm                | web,guest                    |
+|        | POST     | logout                   | logout              | App\Http\Controllers\Auth\LoginController@logout                       | web                          |
+|        | POST     | order                    | order               | App\Http\Controllers\OrderController@order                             | web,verified                 |
+|        | POST     | order_confirm            | thanks              | App\Http\Controllers\OrderController@order_confirm                     | web,verified                 |
+|        | GET|HEAD | password/confirm         | password.confirm    | App\Http\Controllers\Auth\ConfirmPasswordController@showConfirmForm    | web,auth                     |
+|        | POST     | password/confirm         |                     | App\Http\Controllers\Auth\ConfirmPasswordController@confirm            | web,auth                     |
+|        | POST     | password/email           | password.email      | App\Http\Controllers\Auth\ForgotPasswordController@sendResetLinkEmail  | web                          |
+|        | GET|HEAD | password/reset           | password.request    | App\Http\Controllers\Auth\ForgotPasswordController@showLinkRequestForm | web                          |
+|        | POST     | password/reset           | password.update     | App\Http\Controllers\Auth\ResetPasswordController@reset                | web                          |
+|        | GET|HEAD | password/reset/{token}   | password.reset      | App\Http\Controllers\Auth\ResetPasswordController@showResetForm        | web                          |
+|        | GET|HEAD | plan                     | plan                | App\Http\Controllers\ProductController@plan                            | web,verified                 |
+|        | POST     | quotation                | quotation           | App\Http\Controllers\QuotationController@quotation                     | web,verified                 |
+|        | GET|HEAD | register                 | register            | App\Http\Controllers\Auth\RegisterController@showRegistrationForm      | web,guest                    |
+|        | POST     | register                 |                     | App\Http\Controllers\Auth\RegisterController@register                  | web,guest                    |
+|        | GET|HEAD | tcpdf                    |                     | App\Http\Controllers\DocumentController@tcpdf                          | web                          |
+|        | POST     | thanks                   | thanks_mail         | App\Http\Controllers\OrderController@ThanksMail                        | web,verified                 |
+|        | GET|HEAD | top                      | top                 | App\Http\Controllers\HomeController@top                                | web,auth                     |
++--------+----------+--------------------------+---------------------+------------------------------------------------------------------------+------------------------------+

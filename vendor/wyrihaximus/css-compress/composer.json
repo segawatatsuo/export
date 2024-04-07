@@ -1,0 +1,57 @@
+{
+    "name": "wyrihaximus/css-compress",
+    "description": "Compress/minify your CSS",
+    "keywords": [
+        "html",
+        "compress"
+    ],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Cees-Jan Kiewiet",
+            "email": "ceesjank@gmail.com",
+            "homepage": "http://wyrihaximus.net/"
+        }
+    ],
+    "require": {
+        "php": "^8 || ^7.4",
+        "matthiasmullie/minify": "^1.3",
+        "thecodingmachine/safe": "^1.0 || ^0.1",
+        "tubalmartin/cssmin": "^4.1",
+        "websharks/css-minifier": "150820",
+        "wyrihaximus/compress": "^1.1 || ^2.0",
+        "wyrihaximus/compress-contracts": "^1.0",
+        "wyrihaximus/constants": "^1.6"
+    },
+    "conflict": {
+        "matthiasmullie/minify": "1.3.64"
+    },
+    "require-dev": {
+        "wyrihaximus/compress-test-utilities": "^1.0",
+        "wyrihaximus/test-utilities": "^3.3.1"
+    },
+    "config": {
+        "platform": {
+            "php": "7.4.7"
+        },
+        "sort-packages": true
+    },
+    "autoload": {
+        "psr-4": {
+            "WyriHaximus\\CssCompress\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "WyriHaximus\\CssCompress\\Tests\\": "tests/"
+        }
+    },
+    "scripts": {
+        "post-install-cmd": [
+            "composer normalize"
+        ],
+        "post-update-cmd": [
+            "composer normalize"
+        ]
+    }
+}

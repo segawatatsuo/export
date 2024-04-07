@@ -1,0 +1,69 @@
+{
+    "name": "wyrihaximus/html-compress",
+    "description": "Compress/minify your HTML",
+    "license": "MIT",
+    "keywords": [
+        "html",
+        "compress"
+    ],
+    "authors": [
+        {
+            "name": "Cees-Jan Kiewiet",
+            "email": "ceesjank@gmail.com",
+            "homepage": "http://wyrihaximus.net/"
+        }
+    ],
+    "require": {
+        "php": "^7.4 || ^8.0",
+        "thecodingmachine/safe": "^1.1 || ^2.2",
+        "voku/html-min": "^4.4.8",
+        "voku/simple_html_dom": "^4.7.17",
+        "wyrihaximus/compress": "^1.1 || ^2.0",
+        "wyrihaximus/compress-contracts": "^1",
+        "wyrihaximus/constants": "^1.5",
+        "wyrihaximus/css-compress": "^2",
+        "wyrihaximus/js-compress": "^5"
+    },
+    "require-dev": {
+        "wyrihaximus/test-utilities": "^3.7.6"
+    },
+    "conflict": {
+        "voku/simple_html_dom": "<4.7.28"
+    },
+    "autoload": {
+        "psr-4": {
+            "WyriHaximus\\HtmlCompress\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "WyriHaximus\\HtmlCompress\\Tests\\": "tests/"
+        }
+    },
+    "config": {
+        "allow-plugins": {
+            "composer/package-versions-deprecated": true,
+            "dealerdirect/phpcodesniffer-composer-installer": true,
+            "ergebnis/composer-normalize": true,
+            "icanhazstring/composer-unused": true,
+            "infection/extension-installer": true
+        },
+        "platform": {
+            "php": "7.4.7"
+        },
+        "sort-packages": true
+    },
+    "extra": {
+        "unused": [
+            "slevomat/coding-standard"
+        ]
+    },
+    "scripts": {
+        "post-install-cmd": [
+            "composer normalize"
+        ],
+        "post-update-cmd": [
+            "composer normalize"
+        ]
+    }
+}

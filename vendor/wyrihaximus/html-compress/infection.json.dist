@@ -1,0 +1,26 @@
+{
+    "timeout": 120,
+    "source": {
+        "directories": [
+            "src"
+        ]
+    },
+    "logs": {
+        "text": "infection-log.txt"
+    },
+    "mutators": {
+        "@default": true,
+        "MethodCallRemoval": {
+            "ignore": [
+                "WyriHaximus\\HtmlCompress\\Compressor\\HtmlCompressor::__construct",
+                "WyriHaximus\\HtmlCompress\\HtmlMinObserver::domElementBeforeMinification"
+            ]
+        },
+        "PublicVisibility": {
+            "ignore": [
+                "WyriHaximus\\HtmlCompress\\Patterns::add",
+                "WyriHaximus\\HtmlCompress\\Patterns::compress"
+            ]
+        }
+    }
+}

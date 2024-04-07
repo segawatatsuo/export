@@ -1,0 +1,259 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use Illuminate\Http\Request;
+
+use Illuminate\Support\Facades\Auth;
+
+use App\Model\User;
+use App\Model\Product;
+use App\Model\Preference;
+use App\Model\Quotation;
+use App\Model\Quotation_detail;
+use App\Model\Userinformation;
+use Carbon\Carbon;
+
+class QuotationController extends Controller
+{
+    public function quotation(Request $request)
+    {
+        //HTMLフォーム送信のnameがitemのものだけ取得
+        $quotations = $request->get('item');
+        $ctn_total = 0;
+        //全体の注文数を出す
+        foreach ($quotations as $key => $val) {
+            if ($val != "") {
+                $ctn_total += $val; //合計数(カートンTOTAL)
+            }
+        }
+
+        //バナーイメージの種類をセッションに入れる
+        if ($ctn_total<=20) {
+            $img_banner="fedex";
+            $request->session()->put('img_banner', "asset('storage/img/premium-silk/cclogo.png')");
+        } elseif ($ctn_total>=21 and $ctn_total<=250) {
+            $img_banner="air";
+            $request->session()->put('img_banner', "asset('storage/img/premium-silk/AirCargo.png')");
+        } elseif ($ctn_total>=251) {
+            $img_banner="ship";
+            $request->session()->put('img_banner', "asset('storage/img/premium-silk/ShipCargo.png')");
+        }
+        //storage/img/premium-silk/ShipCargo.png
+
+        //セッションメッセージ（10カートン以下の場合）
+        if ($ctn_total < 10) {
+            //session()->flash('flash_message', 'Please enter at least 10 cartons');
+            //return redirect()->action('ProductController@plan');
+            return redirect()->action('ProductController@plan')->with('flash_message', 'Please enter at least 10 cartons in total');
+        }
+
+        //itemを分解する
+        $items = [];
+        $quantity_total = 0;
+        $amount_total = 0;
+
+        foreach ($quotations as $key => $val) {
+            if ($val != "") {
+                preg_match_all('/(.+?)\|(.+?)\|(.*)/', $key, $match);
+                $hinban = $match[1][0]; //品番
+                $hinmei = $match[2][0]; //品名
+                $ctn = $val; //カートン数
+                $tanka = $match[3][0]; //単価
+
+                if ($hinban == "PS01 " or $hinban == "PS02 " or $hinban == "PS03 " or $hinban == "PS04 " or $hinban == "PS05 ") {
+                    if ($ctn_total >= 10 and $ctn_total <= 20) {
+                        $tanka = 19;
+                    } elseif ($ctn_total >= 21 and $ctn_total <= 125 and $ctn < 20) {
+                        $tanka = 9.8;
+                    } elseif ($ctn_total >= 126 and $ctn_total <= 250 and $ctn >= 20) {
+                        $tanka = 8.8;
+                    } elseif ($ctn_total >= 251 and $ctn >= 20) {
+                        $tanka = 7.8;
+                    }
+                } elseif ($hinban == "DL01 " or $hinban == "DL02 " or $hinban == "DL03 " or $hinban == "DL04 " or $hinban == "DL05 ") {
+                    if ($ctn_total >= 10 and $ctn_total <= 24) {
+                        $tanka = 24;
+                    } elseif ($ctn_total >= 21 and $ctn_total <= 125 and $ctn < 20) {
+                        $tanka = 10.8;
+                    } elseif ($ctn_total >= 126 and $ctn_total <= 250 and $ctn >= 20) {
+                        $tanka = 9.8;
+                    } elseif ($ctn_total >= 251 and $ctn >= 20) {
+                        $tanka = 8.8;
+                    }
+                }
+
+                $quantity = $ctn * 24; //本数(カートン数*24本)
+                $amount = $quantity * $tanka; //金額＝数量＊単価
+
+                $quantity_total += $quantity; //本数合計
+                $amount_total += $amount; //金額合計
+
+                $data = [$hinban, $hinmei, $tanka, $ctn, $quantity, $amount];
+                array_push($items, $data);
+            }
+        }
+        //Sailing on(出航予定月)
+        $date = new Carbon();
+        $date = Carbon::now();
+        if ($date->day <= 23) {
+            $year = $date->format('Y');
+            $month = $date->format('M');
+            $sailing_on = $month . ',' . $year;
+        } else {
+            $date = $date->addMonth();
+            $year = $date->format('Y');
+            $month = $date->format('M');
+            $sailing_on = $month . ',' . $year;
+        }
+
+        //ユニークキー（見積番号）を作成
+        $uuid = strtoupper(uniqid());
+        //shipper他いろいろなpreferenceデータを引っ張ってくる
+        $preference_data = Preference::first();
+        $user_id = Auth::id();
+
+        //quotationsテーブルにデータを作成する
+        foreach ($items as $item) {
+            $db = new Quotation();
+
+            $db->quotation_no = $uuid;
+            $db->date_of_issue = Carbon::now();
+            $db->shipper = $preference_data->shipper;
+            $db->consignee_no = $user_id;
+            $db->port_of_loading = $preference_data->port_of_loading;
+            $db->sailing_on = $sailing_on;
+            //arriving_on
+            $db->expiry = $preference_data->expiry;
+
+
+            $db->product_code = $item[0];
+            $db->product_name = $item[1];
+            $db->unit_price = $item[2];
+            $db->ctn = $item[3];
+            $db->quantity = $item[4];
+            $db->amount = $item[5];
+            $db->quantity_total = $quantity_total;
+            $db->ctn_total = $ctn_total;
+            $db->amount_total = $amount_total;
+            //初回の人はまだこの時点ではconsigneeデータがない
+            if ($db->consignee) {
+                $db->consignee = $consignee;
+            }
+            if ($db->final_destination) {
+                $db->final_destination = $state . ',' . $country;
+            }
+
+            //配送方法
+            //１カートンから20カートンまで	FEDEX
+            //21から250カートン AIR
+            //251カートン以上 SHIP
+            if ($ctn_total <= 20) {
+                $db->delivery_method = "Fedex";
+            }
+            if ($ctn_total >= 21 and $ctn_total <= 250) {
+                $db->delivery_method = "AIR";
+            }
+            if ($ctn_total >= 21 and $ctn_total <= 250) {
+                $db->delivery_method = "AIR";
+            }
+            if ($ctn_total >= 251) {
+                $db->delivery_method = "SHIP";
+            }
+
+            $db->save();
+        }
+
+        //Userinformationsテーブルからマスターのidと同じuser_idを探し住所等を取り出す
+        $Userinformations = User::find($user_id)->Userinformations;
+
+        //Userinformationsがnullの場合（住所登録が住んでいない場合）なら、quotation_noを持たせて住所入力フォームへ移動
+        if ($Userinformations == null) {
+            return view('entryform', compact('uuid', 'user_id'));
+        }
+
+        //住所登録が済んでいる場合
+        $consignee = $Userinformations->consignee;
+        $address_line1 = $Userinformations->address_line1;
+        $address_line2 = $Userinformations->address_line2;
+        $city = $Userinformations->city;
+        $state = $Userinformations->state;
+        $country = $Userinformations->country;
+        $country_codes = $Userinformations->country_codes;
+        $phone = $Userinformations->phone;
+        $fax = $Userinformations->fax;
+
+        $user = array(
+            'user_id' => $user_id, 'consignee' => $consignee, 'address_line1' => $address_line1,
+            'address_line2' => $address_line2, 'city' => $city, 'state' => $state, 'country' => $country, 'country_codes' => $country_codes, 'phone' => $phone, 'fax' => $fax
+        );
+
+
+
+        return view('quotation', compact('quotations', 'uuid', 'preference_data', 'items', 'ctn_total', 'quantity_total', 'amount_total', 'sailing_on', 'user', 'img_banner'));
+    }
+
+
+
+    //PDFの出力(FORMからhidenでuuidを受け取る)
+    public function generate_pdf(Request $request)
+    {
+        $main = [];
+        //送信formから
+        $quotation_no = $request->get('quotation_no');
+        //Quotationから見積り内容をget
+        $quotations = Quotation::where('quotation_no', $quotation_no)->get();
+        //送信formから
+        $final_destination = $request->final_destination;
+
+        //Preferenceから
+        $preference_data = Preference::first();
+
+        $shipper = $quotations[0]->shipper;
+        $consignee = $quotations[0]->consignee;
+        $port_of_loading = $quotations[0]->port_of_loading;
+
+        //$final_destination = $quotations[0]->final_destination;
+        $final_destination = $final_destination;
+
+        $sailing_on = $quotations[0]->sailing_on;
+        $arriving_on = $quotations[0]->arriving_on;
+        $expiry = $quotations[0]->expiry;
+
+        $main = [$quotation_no, $preference_data, $shipper, $consignee, $port_of_loading, $final_destination, $sailing_on, $arriving_on, $expiry];
+
+        $data = [];
+        $items = [];
+
+        foreach ($quotations as $quotation) {
+            $product_code = $quotation->product_code;
+            $product_name = $quotation->product_name;
+            $quantity = $quotation->quantity;
+            $ctn = $quotation->ctn;
+            $quantity = $quotation->quantity;
+            $unit_price = $quotation->unit_price;
+            $amount = $quotation->amount;
+            $data = [$product_code, $product_name, $quantity, $ctn, $unit_price, $amount];
+            array_push($items, $data);
+        }
+
+        $quantity_total = $quotations[0]->quantity_total;
+        $ctn_total = $quotations[0]->ctn_total;
+        $amount_total = $quotations[0]->amount_total;
+        $total = [$quantity_total, $ctn_total, $amount_total];
+        /*
+        $pdf = \PDF::loadView('quotation_print',compact("main","items"));
+        $pdf->setPaper('A4');
+        return $pdf->download('quotation.pdf');
+        */
+
+        $image_path = storage_path('app/public/hamada.png');
+        $image_data = base64_encode(file_get_contents($image_path));
+
+        //$pdf = PDF::loadView('(Bladeファイル)', compact('image_data',....))->setPaper('a4', 'landscape');
+        //$pdf->download('(ファイル名)');
+
+        $pdf = \PDF::loadView('quotation_print', compact('image_data', 'main', 'items', 'total'))->setPaper('a4')->setWarnings(false);
+        return $pdf->download('quotation.pdf');
+    }
+}

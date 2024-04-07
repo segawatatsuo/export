@@ -1,0 +1,6 @@
+Serverでは
+{{ asset('storage/img/premium-silk/logo1.png') }}
+
+
+Windowsでは
+{{ asset('/img/premium-silk/logo1.png') }}
