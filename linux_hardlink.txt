@@ -1,0 +1,20 @@
+[r2325683@web0028 export]$ ls -al
+合計 23
+drwxr-xr-x  2 r2325683 r2325683 14  5月 16  2022 .
+drwxr-xr-x 27 r2325683 r2325683 37  9月 21  2023 ..
+lrwxrwxrwx  1 r2325683 r2325683 37  5月 16  2022 .htaccess -> /home/r2325683/fedex/public/.htaccess
+lrwxrwxrwx  1 r2325683 r2325683 31  5月 16  2022 css -> /home/r2325683/fedex/public/css
+lrwxrwxrwx  1 r2325683 r2325683 32  5月 16  2022 dist -> /home/r2325683/fedex/public/dist
+lrwxrwxrwx  1 r2325683 r2325683 39  5月 16  2022 favicon.ico -> /home/r2325683/fedex/public/favicon.ico
+lrwxrwxrwx  1 r2325683 r2325683 37  5月 16  2022 index.php -> /home/r2325683/fedex/public/index.php
+lrwxrwxrwx  1 r2325683 r2325683 30  5月 16  2022 js -> /home/r2325683/fedex/public/js
+lrwxrwxrwx  1 r2325683 r2325683 45  5月 16  2022 mix-manifest.json -> /home/r2325683/fedex/public/mix-manifest.json
+lrwxrwxrwx  1 r2325683 r2325683 35  5月 16  2022 plugins -> /home/r2325683/fedex/public/plugins
+lrwxrwxrwx  1 r2325683 r2325683 38  5月 16  2022 robots.txt -> /home/r2325683/fedex/public/robots.txt
+lrwxrwxrwx  1 r2325683 r2325683 35  5月 16  2022 storage -> /home/r2325683/fedex/public/storage
+lrwxrwxrwx  1 r2325683 r2325683 34  5月 16  2022 vendor -> /home/r2325683/fedex/public/vendor
+lrwxrwxrwx  1 r2325683 r2325683 38  5月 16  2022 web.config -> /home/r2325683/fedex/public/web.config
+[r2325683@web0028 export]$
+
+
+ua110011-3826@tbz.t-com.ne.jp
