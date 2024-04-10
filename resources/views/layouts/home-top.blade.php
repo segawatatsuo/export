@@ -44,7 +44,7 @@
 
                 <div class="col-md-4" style="padding: 0">
                     <a href="https://www.ccmedico.com/">
-                        <img src="{{ asset('ccm.jpg') }}" style="height: 60px;">
+                        <img src="{{ asset('storage/img/ccm.jpg') }}" style="height: 60px;">
                     </a>
                 </div>
 
