@@ -216,7 +216,7 @@
 
                                 <div class="col-md-6">
                                     <input id="industry" type="text" class="form-control" name="industry"
-                                        value="{{ old('industry') }}" placeholder="(ex.)Wholesaler of beauty">
+                                        value="{{ $main['industry'] }}" placeholder="(ex.)Wholesaler of beauty">
                                 </div>
                             </div>
 
@@ -226,7 +226,7 @@
                                     class="col-md-4 col-form-label text-md-right">{{ 'Your Items of Business' }}</label>
                                 <div class="col-md-6">
                                     <input id="business_items" type="text" class="form-control" name="business_items"
-                                        value="{{ old('business_items') }}" placeholder="(ex.)Cosmetic bags">
+                                        value="{{ $main['business_items'] }}" placeholder="(ex.)Cosmetic bags">
                                 </div>
                             </div>
 
@@ -235,7 +235,7 @@
                                     class="col-md-4 col-form-label text-md-right">{{ 'Your Customer(s)' }}</label>
                                 <div class="col-md-6">
                                     <input id="customer_name" type="text" class="form-control" name="customer_name"
-                                        value="{{ old('customer_name') }}" placeholder="(ex.)Cosmetic Shops, wholesalers,">
+                                        value="{{ $main['customer_name'] }}" placeholder="(ex.)Cosmetic Shops, wholesalers,">
                                 </div>
                             </div>
 
@@ -247,7 +247,7 @@
 
                                 <div class="col-md-6">
                                     <input id="website" type="text" class="form-control" name="website"
-                                        value="{{ old('website') }}" placeholder="(ex.)www.ccmedico.com">
+                                        value="{{ $main['website'] }}" placeholder="(ex.)www.ccmedico.com">
                                 </div>
                             </div>
 
@@ -256,7 +256,7 @@
                                     class="col-md-4 col-form-label text-md-right">{{ 'Your FedEX Account' }}</label>
                                 <div class="col-md-6">
                                     <input id="fedex" type="text" class="form-control" name="fedex"
-                                        value="{{ old('fedex') }}" placeholder="(ex.)012345678">
+                                        value="{{ $main['fedex'] }}" placeholder="(ex.)012345678">
                                 </div>
                             </div>
 
@@ -265,7 +265,7 @@
                                     class="col-md-4 col-form-label text-md-right">{{ 'Your company SNS' }}</label>
                                 <div class="col-md-6">
                                     <input id="sns" type="text" class="form-control @error('sns') is-invalid @enderror"
-                                        name="sns" value="{{ old('sns') }}" placeholder="(ex.)www.facebook.com/ccmedico">
+                                        name="sns" value="{{ $main['sns'] }}" placeholder="(ex.)www.facebook.com/ccmedico">
                                 </div>
                             </div>
 

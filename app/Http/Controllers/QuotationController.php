@@ -720,10 +720,11 @@ class QuotationController extends Controller
             $ctn = (float)$ctn;
             $unit = $detail->unit;
             $unit = (int)$unit;
-            $amaunt = $detail->amaunt;
+            $amaunt = $detail->amount;
             $dataset = array($hinban, $hinmei, $tanka, $ctn, $unit, $amaunt);
             array_push($items, $dataset);
         }
+
         $uuid = "";
         $ctn_total = $data->ctn_total;
         $quantity_total = $data->quantity_total;
@@ -732,6 +733,7 @@ class QuotationController extends Controller
         $type = $data->type;
         $expiry_days2 = $data->expiry_days2;
         $user = "";
+        
 
         return view('quotation', compact('uuid', 'preference_data', 'items', 'ctn_total', 'quantity_total', 'amount_total', 'sailing_on', 'user', 'quotation_no', 'type', 'expiry_days2', 'shipper', 'consignee', 'port_of_loading', 'arriving_on'));
     }

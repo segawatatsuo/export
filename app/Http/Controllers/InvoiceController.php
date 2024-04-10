@@ -303,7 +303,7 @@ class InvoiceController extends Controller
             $ctn = (float)$ctn;
             $unit = $detail->unit;
             $unit = (int)$unit;
-            $amaunt = $detail->amaunt;
+            $amaunt = $detail->amount;
             $dataset = array($hinban, $hinmei,$tanka, $ctn,$unit,$amaunt);
             array_push($items, $dataset);
         }
