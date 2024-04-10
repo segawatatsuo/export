@@ -22,15 +22,13 @@ use App\Model\Expirie;
 use App\Model\Consignee;
 use App\Model\Pic;
 
-
-
 class AccountController extends Controller
 {
     public function consignee()
     {
         $id = Auth::id(); //usersテーブルの16
         $users = User::with('Userinformations')->where('id', $id)->first();
-        return view('account.consignee',compact('users'));
+        return view('account.consignee', compact('users'));
     }
 
     public function importer()
@@ -38,19 +36,20 @@ class AccountController extends Controller
         $id = Auth::id();
         $main = User::with('Userinformations')->where('id', $id)->first();
         $main = $main->Userinformations;
-        return view('account.importer',compact('main'));
+        return view('account.importer', compact('main'));
     }
 
 
     public function index()
     {
-        $data = Quotation::with(['invoices','invoices.order_confirms'])->orderBy('created_at','desc')->paginate(10);
-        $consignee = Userinformation::where('user_id',Auth::id())->first();
+        $data = Quotation::with(['invoices','invoices.order_confirms'])->where('consignee_no', Auth::id())->orderBy('created_at', 'desc')->paginate(10);
+        $consignee = Userinformation::where('user_id', Auth::id())->first();
+
 
         $id = Auth::id();
         $users = User::with('Userinformations')->where('id', $id)->first();
- 
-        return view('account/index',compact('data','consignee','users'));
+
+        return view('account/index', compact('data', 'consignee', 'users'));
     }
 
     public function order()
@@ -91,11 +90,9 @@ class AccountController extends Controller
 
     public function edit()
     {
-
         $id = Auth::id();
         $user = User::with('Userinformations')->where('id', $id)->first();
         return view('account/edit', compact('user'));
-
     }
 
     public function quotation()
@@ -136,7 +133,6 @@ class AccountController extends Controller
 
     public function update(Request $request)
     {
-
         $request->validate([
             'name' => 'required',
             'address_line1' => 'required',
@@ -152,8 +148,8 @@ class AccountController extends Controller
         $user = User::find($id);
         $user_id= $user->id;
 
-        $consignee = Consignee::where('user_id',$user_id)->where('default_destination','1')->first();
-        $pic =Pic::where('user_id',$user_id)->where('default_destination','1')->first();
+        $consignee = Consignee::where('user_id', $user_id)->where('default_destination', '1')->first();
+        $pic =Pic::where('user_id', $user_id)->where('default_destination', '1')->first();
 
         $consignee->consignee = $request->input('name');
         $consignee->address_line1 = $request->input('address_line1');
@@ -201,14 +197,15 @@ class AccountController extends Controller
         return redirect()->route('account.index');
     }
 
-    public function add(Request $request){
-
+    public function add(Request $request)
+    {
         $id = Auth::id();
         $user = User::with('Userinformations')->where('id', $id)->first();
         return view('account/add', compact('user'));
     }
 
-    public function add_store(Request $request){
+    public function add_store(Request $request)
+    {
         $request->validate([
             'name' => 'required',
             'address_line1' => 'required',
@@ -226,11 +223,11 @@ class AccountController extends Controller
         $check = $request->default;//Set as default registration destination onかnull
 
         //既存の1を消去
-        if($check){
-            $con = Consignee::where('user_id',$user_id)->where('default_destination','1')->first();
+        if ($check) {
+            $con = Consignee::where('user_id', $user_id)->where('default_destination', '1')->first();
             $con->default_destination = "";
             $con->save();
-            $pc = Pic::where('user_id',$user_id)->where('default_destination','1')->first();
+            $pc = Pic::where('user_id', $user_id)->where('default_destination', '1')->first();
             $pc->default_destination = "";
             $pc->save();
         }
@@ -247,7 +244,7 @@ class AccountController extends Controller
         $consignee->post_code = $request->input('zip');
         $consignee->phone = $request->input('phone');
         $consignee->user_id = $user_id;
-        if($check){
+        if ($check) {
             $consignee->default_destination = "1";
         }
         $consignee->save();
@@ -257,7 +254,7 @@ class AccountController extends Controller
         $pic->company_name = $request->input('company_name');
         $pic->country = $request->input('person_in_charge_country');
         $pic->user_id = $user_id;
-        if($check){
+        if ($check) {
             $pic->default_destination = "1";
         }
         $pic->save();
@@ -265,32 +262,33 @@ class AccountController extends Controller
         return redirect()->route('account.index');
     }
 
-    public function change(Request $request){
-
+    public function change(Request $request)
+    {
         $id = Auth::id();
-        $consignees=Consignee::where('user_id',$id)->get();
+        $consignees=Consignee::where('user_id', $id)->get();
         return view('account/change', compact('consignees'));
     }
-    public function change_update(Request $request){
+    public function change_update(Request $request)
+    {
 
         //該当者の1を全部消す
 
         $user_id= Auth::id();
-        $con = Consignee::where('user_id',$user_id)->where('default_destination','1')->first();
+        $con = Consignee::where('user_id', $user_id)->where('default_destination', '1')->first();
         $con->default_destination = "";
         $con->save();
-        $pc = Pic::where('user_id',$user_id)->where('default_destination','1')->first();
+        $pc = Pic::where('user_id', $user_id)->where('default_destination', '1')->first();
         $pc->default_destination = "";
         $pc->save();
 
         $id = $request->consignee;//新しくチェックされたconsigneesのid
-        $con = Consignee::where('id',$id)->first();
+        $con = Consignee::where('id', $id)->first();
         $pic_id = $con->pic_id;
-        $consignee = Consignee::where('pic_id',$pic_id)->first();
+        $consignee = Consignee::where('pic_id', $pic_id)->first();
         $consignee->default_destination = "1";
         $consignee->save();
 
-        $pc = Pic::where('id',$pic_id)->first();
+        $pc = Pic::where('id', $pic_id)->first();
         $pc->default_destination = "1";
         $pc->save();
 
@@ -298,7 +296,8 @@ class AccountController extends Controller
     }
 
 
-    public function importer_update(Request $request){
+    public function importer_update(Request $request)
+    {
         /*
         $request->validate([
             'name' => 'required',
@@ -343,6 +342,6 @@ class AccountController extends Controller
 
 
 
-        return view('account.importer',compact('main'));
+        return view('account.importer', compact('main'));
     }
 }
