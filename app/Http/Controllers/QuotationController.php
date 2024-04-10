@@ -568,8 +568,10 @@ class QuotationController extends Controller
         $db->consignee_no = $user_id;
         //SELECT * FROM `userinformations` WHERE `user_id` = 16
         $Userinformations = User::find($user_id)->Userinformations;
-        $consignee = $Userinformations->consignee;
-        $db->consignee = $consignee;
+        if ($Userinformations) {
+            $consignee = $Userinformations->consignee;
+            $db->consignee = $consignee;
+        }
 
 
         $db->port_of_loading = $preference_data->port_of_loading;
