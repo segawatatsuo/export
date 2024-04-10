@@ -122,15 +122,15 @@
                             <!--
                             <a href="{{-- route('account.packinglist', ['order_no' => $hoge->invoices->order_confirms->order_no]) --}}">
                             -->
-                            <a href="{{ asset('storage/account/packinglist.pdf') }}">Packinglist</a>
+                            <a href="{{-- asset('storage/account/packinglist.pdf') --}}">Packinglist</a>
                             
                             @else
-                            <a href="{{ asset('storage/account/packinglist.pdf') }}">Packinglist</a>
+                            <a href="{{-- asset('storage/account/packinglist.pdf') --}}">Packinglist</a>
                             @endif
                             
-                            <br><a href="{{ asset('storage/account/AirWaybill.pdf') }}">Air Waybill</a><br>
-                            <a href="{{ asset('storage/account/BillOfLoading.pdf') }}">Bill of Loading</a></td>
-                        <td style="width: 10%"><a href="{{ asset('storage/account/Export_Declaration.pdf') }}">Export Declaration</a></td>
+                            <br><a href="{{-- asset('storage/account/AirWaybill.pdf') --}}">Air Waybill</a><br>
+                            <a href="{{-- asset('storage/account/BillOfLoading.pdf') --}}">Bill of Loading</a></td>
+                        <td style="width: 10%"><a href="{{-- asset('storage/account/Export_Declaration.pdf') --}}">Export Declaration</a></td>
 
                     </tr>
                 @endforeach
