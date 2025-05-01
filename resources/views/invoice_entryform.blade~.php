@@ -1,11 +1,14 @@
-{{-- @extends('layouts.app') --}}
+{{--@extends('layouts.app')--}}
+@extends('layouts.login')
 
-@extends('../layouts.acount2')
-
+invoice
 
 @section('content')
     <div class="container">
         <div class="row justify-content-center">
+            <div class="col-md-8">
+                <h4 class="text-center">Please enter your company information</h4>
+            </div>
 
             <div class="col-md-8">
                 <div class="card">
@@ -17,8 +20,7 @@
                             <h2 class="text-center">Importer (Head Office)</h2>
                         </div>
 
-
-                        <form method="POST" action="{{ route('account.importer_update') }}">
+                        <form method="POST" action="invoice_entry_and_go">
                             @csrf
                             <div class="form-group row">
                                 <label for="bill_company_address_line1"
@@ -27,8 +29,8 @@
                                 <div class="col-md-6">
                                     <input id="importer_name" type="text"
                                         class="form-control @error('importer_name') is-invalid @enderror"
-                                        name="importer_name" value="{{ $main['importer_name'] ?? '' }}" required
-                                        autocomplete="" placeholder="">
+                                        name="importer_name" value="{{ $main['company_name'] }}"
+                                        required autocomplete="" placeholder="">
 
                                     @error('importer_name')
                                         <span class="invalid-feedback" role="alert">
@@ -46,9 +48,8 @@
                                 <div class="col-md-6">
                                     <input id="bill_company_address_line1" type="text"
                                         class="form-control @error('bill_company_address_line1') is-invalid @enderror"
-                                        name="bill_company_address_line1"
-                                        value="{{ $main['bill_company_address_line1'] ?? '' }}" required autocomplete=""
-                                        placeholder="">
+                                        name="bill_company_address_line1" value="{{ $main['address_line1'] }}"
+                                        required autocomplete="" placeholder="">
 
                                     @error('bill_company_address_line1')
                                         <span class="invalid-feedback" role="alert">
@@ -66,7 +67,7 @@
                                 <div class="col-md-6">
                                     <input id="bill_company_address_line2" type="text"
                                         class="form-control @error('bill_company_address_line2') is-invalid @enderror"
-                                        name="bill_company_address_line2" value="{{ $main['bill_company_address_line2'] ?? '' }}"
+                                        name="bill_company_address_line2" value="{{ $main['address_line2'] }}"
                                         required autocomplete="" placeholder="">
 
                                     @error('bill_company_address_line2')
@@ -85,8 +86,8 @@
                                 <div class="col-md-6">
                                     <input id="bill_company_city" type="text"
                                         class="form-control @error('bill_company_city') is-invalid @enderror"
-                                        name="bill_company_city" value="{{ $main['bill_company_city'] ?? '' }}" required autocomplete=""
-                                        placeholder="">
+                                        name="bill_company_city" value="{{ $main['city'] }}"
+                                        required autocomplete="" placeholder="">
 
                                     @error('bill_company_city')
                                         <span class="invalid-feedback" role="alert">
@@ -104,8 +105,8 @@
                                 <div class="col-md-6">
                                     <input id="bill_company_state" type="text"
                                         class="form-control @error('bill_company_state') is-invalid @enderror"
-                                        name="bill_company_state" value="{{ $main['bill_company_state'] ?? '' }}" required
-                                        autocomplete="" placeholder="">
+                                        name="bill_company_state" value="{{ $main['state'] }}"
+                                        required autocomplete="" placeholder="">
 
                                     @error('bill_company_state')
                                         <span class="invalid-feedback" role="alert">
@@ -122,7 +123,7 @@
                                 <div class="col-md-6">
                                     <input id="bill_company_country" type="text"
                                         class="form-control @error('bill_company_country') is-invalid @enderror"
-                                        name="bill_company_country" value="{{ $main['bill_company_country'] ?? '' }}"
+                                        name="bill_company_country" value="{{ $main['country'] }}"
                                         required autocomplete="" placeholder="">
 
                                     @error('bill_company_country')
@@ -140,8 +141,8 @@
                                 <div class="col-md-6">
                                     <input id="bill_company_zip" type="text"
                                         class="form-control @error('bill_company_zip') is-invalid @enderror"
-                                        name="bill_company_zip" value="{{ $main['bill_company_zip'] ?? '' }}" required autocomplete=""
-                                        placeholder="">
+                                        name="bill_company_zip" value="{{ $main['zip'] }}"
+                                        required autocomplete="" placeholder="">
 
                                     @error('bill_company_zip')
                                         <span class="invalid-feedback" role="alert">
@@ -158,8 +159,8 @@
                                 <div class="col-md-6">
                                     <input id="bill_company_phone" type="text"
                                         class="form-control @error('bill_company_phone') is-invalid @enderror"
-                                        name="bill_company_phone" value="{{ $main['bill_company_phone'] ?? '' }}" required
-                                        autocomplete="" placeholder="">
+                                        name="bill_company_phone" value="{{ $main['phone'] }}"
+                                        required autocomplete="" placeholder="">
 
                                     @error('bill_company_phone')
                                         <span class="invalid-feedback" role="alert">
@@ -177,7 +178,8 @@
                                 <div class="col-md-6">
                                     <input id="president" type="text"
                                         class="form-control @error('president') is-invalid @enderror" name="president"
-                                        value="{{ $main['president'] ?? '' }}" required autocomplete="" placeholder="">
+                                        value="{{ $main['person'] }}" required autocomplete=""
+                                        placeholder="">
 
                                     @error('president')
                                         <span class="invalid-feedback" role="alert">
@@ -194,9 +196,9 @@
                                     class="col-md-4 col-form-label text-md-right">{{ 'Company Initials ※' }}</label>
 
                                 <div class="col-md-6">
-                                    <input id="initial" type="text"
+                                    <input id="president_gender" type="text"
                                         class="form-control @error('initial') is-invalid @enderror" name="initial"
-                                        value="{{ $main['initial'] ?? '' }}" required
+                                        value="{{ $main['initial'] }}" required
                                         placeholder="Please enter in 2 letters">
 
                                     @error('initial')
@@ -217,7 +219,7 @@
 
                                 <div class="col-md-6">
                                     <input id="industry" type="text" class="form-control" name="industry"
-                                        value="{{ $main['industry'] ?? '' }}" placeholder="(ex.)Wholesaler of beauty">
+                                        value="{{ old('industry') }}" placeholder="(ex.)Wholesaler of beauty">
                                 </div>
                             </div>
 
@@ -227,7 +229,7 @@
                                     class="col-md-4 col-form-label text-md-right">{{ 'Your Items of Business' }}</label>
                                 <div class="col-md-6">
                                     <input id="business_items" type="text" class="form-control" name="business_items"
-                                        value="{{ $main['business_items'] ?? '' }}" placeholder="(ex.)Cosmetic bags">
+                                        value="{{ old('business_items') }}" placeholder="(ex.)Cosmetic bags">
                                 </div>
                             </div>
 
@@ -236,8 +238,7 @@
                                     class="col-md-4 col-form-label text-md-right">{{ 'Your Customer(s)' }}</label>
                                 <div class="col-md-6">
                                     <input id="customer_name" type="text" class="form-control" name="customer_name"
-                                        value="{{ $main['customer_name'] ?? '' }}"
-                                        placeholder="(ex.)Cosmetic Shops, wholesalers,">
+                                        value="{{ old('customer_name') }}" placeholder="(ex.)Cosmetic Shops, wholesalers,">
                                 </div>
                             </div>
 
@@ -249,7 +250,7 @@
 
                                 <div class="col-md-6">
                                     <input id="website" type="text" class="form-control" name="website"
-                                        value="{{ $main['website'] ?? '' }}" placeholder="(ex.)www.ccmedico.com">
+                                        value="{{ old('website') }}" placeholder="(ex.)www.ccmedico.com">
                                 </div>
                             </div>
 
@@ -258,7 +259,7 @@
                                     class="col-md-4 col-form-label text-md-right">{{ 'Your FedEX Account' }}</label>
                                 <div class="col-md-6">
                                     <input id="fedex" type="text" class="form-control" name="fedex"
-                                        value="{{ $main['fedex'] ?? '' }}" placeholder="(ex.)012345678">
+                                        value="{{ old('fedex') }}" placeholder="(ex.)012345678">
                                 </div>
                             </div>
 
@@ -266,32 +267,28 @@
                                 <label for="sns"
                                     class="col-md-4 col-form-label text-md-right">{{ 'Your company SNS' }}</label>
                                 <div class="col-md-6">
-                                    <input id="sns" type="text"
-                                        class="form-control @error('sns') is-invalid @enderror" name="sns"
-                                        value="{{ $main['sns'] ?? '' }}" placeholder="(ex.)www.facebook.com/ccmedico">
+                                    <input id="sns" type="text" class="form-control @error('sns') is-invalid @enderror"
+                                        name="sns" value="{{ old('sns') }}" placeholder="(ex.)www.facebook.com/ccmedico">
                                 </div>
                             </div>
 
 
                             <!--登録ボタン -->
-                            <div class="col-12 mb-5 mt-5">
-                                <div class="text-center">
-
-                                    <button type="submit" class="btn btn-lg a-button-input ">update</button>
-                                    <button type="button" class="btn btn-lg a-button-input btn150" onClick="history.back();">Back</button>
+                            <div class="form-group row mb-0">
+                                <div class="col-md-6 offset-md-4">
+                                    <button type="submit" class="btn btn-primary">
+                                        {{ 'Register' }}
+                                    </button>
                                 </div>
                             </div>
 
-
-
-
+                            <input type="hidden" name="quotation_no" value="{{ $uuid }}">
+                            <input type="hidden" name="user_id" value="{{ $user_id }}">
+                            <input type="hidden" name="$final_destination" value="{{ $final_destination }}">
+                        </form>
                     </div>
-
-
-                    </form>
                 </div>
             </div>
         </div>
-    </div>
     </div>
 @endsection

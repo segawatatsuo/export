@@ -1,7 +1,7 @@
 {{--@extends('layouts.app')--}}
 @extends('layouts.login')
 
-invoice
+
 
 @section('content')
     <div class="container">

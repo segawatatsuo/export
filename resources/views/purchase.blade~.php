@@ -118,11 +118,11 @@
         <table class="sushiTable">
             <tr>
                 <th style="text-align:left; width: 30%;">Shipper</th>
-                <td>{{ $main['shipper'] }}</td>
+                <td>{{ $main['shipper'] }}<< /td>
             </tr>
             <tr>
                 <th style="text-align:left;">Consignee</th>
-                <td>{{ $consignee_name }}</td>
+                <td>{{ $consignee_name }}<< /td>
             </tr>
             <tr>
                 <th style="text-align:left;">Port ofr Loading</th>

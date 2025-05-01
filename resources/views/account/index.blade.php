@@ -9,22 +9,22 @@
             <div class="row">
             <div class="col-4">
                 <span class="font-weight-bold">Consignee(Warehouse): {{ $consignee_name }}</span><br>
-                {{ $consignee_address_line1 }},
-                {{ $consignee_address_line2 }},
-                {{ $consignee_city }},
-                {{ $consignee_state }}
-                {{ $consignee_country }}<br>
-                phone:{{ $consignee->phone }}
+                {{ $consignee_address_line1 ?? '' }},
+                {{ $consignee_address_line2 ?? '' }},
+                {{ $consignee_city ?? '' }},
+                {{ $consignee_state  ?? ''}}
+                {{ $consignee_country  ?? ''}}<br>
+                phone:{{ $consignee->phone  ?? ''}}
                 <a href="{{ route('account.consignee') }}">modification</a>
             </div>
             <div class="col-4">
-                <span class="font-weight-bold">Importer (Head Office): {{ $consignee->importer_name }}</span><br>
-                {{ $consignee->bill_company_address_line1 }},
-                {{ $consignee->bill_company_address_line2 }},
-                {{ $consignee->bill_company_city }},
-                {{ $consignee->bill_company_state }}
-                {{ $consignee->bill_company_country }}<br>
-                phone:{{ $consignee->bill_company_phone }}
+                <span class="font-weight-bold">Importer (Head Office): {{ $consignee->importer_name ?? '' }}</span><br>
+                {{ $consignee->bill_company_address_line1  ?? ''}},
+                {{ $consignee->bill_company_address_line2 ?? '' }},
+                {{ $consignee->bill_company_city ?? '' }},
+                {{ $consignee->bill_company_state ?? '' }}
+                {{ $consignee->bill_company_country ?? '' }}<br>
+                phone:{{ $consignee->bill_company_phone ?? '' }}
                 <a href="{{ route('account.importer') }}">modification</a>
             </div>
         </div>

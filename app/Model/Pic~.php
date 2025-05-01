@@ -8,7 +8,6 @@ class Pic extends Model
 {
     protected $fillable = [
         'user_id',
-        'pic_id',
         'name',
         'email',
         'country',

@@ -19,25 +19,10 @@
 
                     <div class="card-body">
                         <div>
-
-
-                            <label for="consignee_name" class="mt">consignee:</label>
-                            <input id="consignee_name" type="text"
-                                class="form-control @error('consignee_name') is-invalid @enderror" 
-                                name="consignee_name"
-                                @if ($con) value="{{ $con->consignee }}" @endif
-                                required placeholder="">
-                            @error('consignee_name')
-                                <span class="invalid-feedback" role="alert">
-                                    <strong>{{ $message }}</strong>
-                                </span>
-                            @enderror
-
-
-                            <label for="name" class="mt">person:</label>
+                            <label for="name" class="mt">name:</label>
 
                             <input id="name" type="text" class="form-control @error('name') is-invalid @enderror"
-                                name="name" @if ($con) value="{{ $con->name }}" @endif required placeholder="">
+                                name="name" value="{{ $consignee_name }}" required placeholder="">
                             @error('importer_name')
                                 <span class="invalid-feedback" role="alert">
                                     <strong>{{ $message }}</strong>
@@ -47,8 +32,7 @@
                             <label for="address_line1" class="mt">address_line1:</label>
                             <input id="address_line1" type="text"
                                 class="form-control @error('address_line1') is-invalid @enderror" name="address_line1"
-                                @if ($con) value="{{ $con->address_line1 }}" @endif
-                                required placeholder="">
+                                value="{{ $consignee_address_line1 }}" required placeholder="">
                             @error('address_line1')
                                 <span class="invalid-feedback" role="alert">
                                     <strong>{{ $message }}</strong>
@@ -58,8 +42,7 @@
                             <label for="address_line2" class="mt">address_line2:</label>
                             <input id="address_line2" type="text"
                                 class="form-control @error('address_line2') is-invalid @enderror" name="address_line2"
-                                @if ($con) value="{{ $con->address_line2 }}" @endif
-                                required placeholder="">
+                                value="{{ $consignee_address_line2 }}" required placeholder="">
                             @error('address_line2')
                                 <span class="invalid-feedback" role="alert">
                                     <strong>{{ $message }}</strong>
@@ -68,9 +51,7 @@
 
                             <label for="city" class="mt">city:</label>
                             <input id="city" type="text" class="form-control @error('city') is-invalid @enderror"
-                                name="city" 
-                                @if ($con) value="{{ $con->city }}" @endif
-                                required placeholder="">
+                                name="city" value="{{ $consignee_city }}" required placeholder="">
                             @error('city')
                                 <span class="invalid-feedback" role="alert">
                                     <strong>{{ $message }}</strong>
@@ -79,9 +60,7 @@
 
                             <label for="state" class="mt">state:</label>
                             <input id="state" type="text" class="form-control @error('state') is-invalid @enderror"
-                                name="state" 
-                                @if ($con) value="{{ $con->state }}" @endif
-                                required placeholder="">
+                                name="state" value="{{ $consignee_state }}" required placeholder="">
                             @error('state')
                                 <span class="invalid-feedback" role="alert">
                                     <strong>{{ $message }}</strong>
@@ -90,9 +69,7 @@
 
                             <label for="country" class="mt">country:</label>
                             <input id="country" type="text" class="form-control @error('country') is-invalid @enderror"
-                                name="country" 
-                                @if ($con) value="{{ $con->country_codes }}" @endif
-                                required placeholder="">
+                                name="country" value="{{ $consignee_country }}" required placeholder="">
                             @error('country')
                                 <span class="invalid-feedback" role="alert">
                                     <strong>{{ $message }}</strong>
@@ -101,9 +78,7 @@
 
                             <label for="zip" class="mt">zip:</label>
                             <input id="zip" type="text" class="form-control @error('zip') is-invalid @enderror"
-                                name="zip" 
-                                @if ($con) value="{{ $con->post_code }}" @endif
-                                required placeholder="">
+                                name="zip" value="{{ $consignee_zip }}" required placeholder="">
                             @error('zip')
                                 <span class="invalid-feedback" role="alert">
                                     <strong>{{ $message }}</strong>
@@ -112,9 +87,7 @@
 
                             <label for="phone" class="mt">phone:</label>
                             <input id="phone" type="text" class="form-control @error('phone') is-invalid @enderror"
-                                name="phone" 
-                                @if ($con) value="{{ $con->phone }}" @endif
-                                required placeholder="">
+                                name="phone" value="{{ $consignee_phone }}" required placeholder="">
                             @error('phone')
                                 <span class="invalid-feedback" role="alert">
                                     <strong>{{ $message }}</strong>
@@ -135,14 +108,11 @@
                     </div>
                     <div class="card-body">
                         <div>
-
-
-                            <label for="person_name" class="mt">person:</label>
+                            <label for="person_name" class="mt">name:</label>
                             <input id="person_name" type="text"
                                 class="form-control @error('person_name') is-invalid @enderror" 
                                 name="person_name"
-                                @if ($pic) value="{{ $pic->name }}" @endif
-                                required placeholder="">
+                                value="{{ $person_in_charge_name }}" required placeholder="">
                             @error('person_name')
                                 <span class="invalid-feedback" role="alert">
                                     <strong>{{ $message }}</strong>
@@ -154,8 +124,7 @@
                             <input id="email" type="text"
                                 class="form-control @error('email') is-invalid @enderror" 
                                 name="email"
-                                @if ($pic) value="{{ $pic->email }}" @endif
-                                required placeholder="">
+                                value="{{ $person_in_charge_email }}" required placeholder="">
                             @error('email')
                                 <span class="invalid-feedback" role="alert">
                                     <strong>{{ $message }}</strong>
@@ -167,8 +136,8 @@
                             <input id="person_in_charge_country" type="text"
                                 class="form-control @error('person_in_charge_country') is-invalid @enderror"
                                 name="person_in_charge_country"
-                                @if ($pic) value="{{ $pic->country }}" @endif
-                                required placeholder="">
+                                value="{{ $person_in_charge_country }}" required
+                                placeholder="">
                             @error('person_in_charge_country')
                                 <span class="invalid-feedback" role="alert">
                                     <strong>{{ $message }}</strong>
@@ -179,8 +148,8 @@
                             <input id="company_name" type="text"
                                 class="form-control @error('company_name') is-invalid @enderror"
                                 name="company_name"
-                                @if ($pic) value="{{ $pic->company_name }}" @endif
-                                required placeholder="">
+                                value="{{ $person_in_charge_company_name }}" required
+                                placeholder="">
                             @error('company_name')
                                 <span class="invalid-feedback" role="alert">
                                     <strong>{{ $message }}</strong>

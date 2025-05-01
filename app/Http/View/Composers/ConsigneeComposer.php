@@ -33,10 +33,10 @@ class ConsigneeComposer
                 $consignee_zip = $consn->post_code;
                 $consignee_person = $consn->name;
 
-                $person_in_charge_name = $pic->name;
-                $person_in_charge_email = $pic->email;
-                $person_in_charge_country = $pic->country;
-                $person_in_charge_company_name = $pic->company_name;
+                $person_in_charge_name = optional($pic)->name;
+                $person_in_charge_email = optional($pic)->email;
+                $person_in_charge_country = optional($pic)->country;
+                $person_in_charge_company_name = optional($pic)->company_name;
 
                 $hash = array( 
                     'consignee_name' => $consignee_name, 

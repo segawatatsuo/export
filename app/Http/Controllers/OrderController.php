@@ -772,7 +772,7 @@ class OrderController extends Controller
                 copy($from, $to);
             } else {
                 //お名前用
-                $from = '/home/r2325683/fedex/public/storage/order/' . $file_name;
+                $from = '/home/r2325683/export/public/storage/order/' . $file_name;
                 $to = '/home/r2325683/ccmapp/public/storage/order/' . $file_name;
                 copy($from, $to);
             }

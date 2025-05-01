@@ -26,12 +26,9 @@ class AccountController extends Controller
 {
     public function consignee()
     {
-        $id = Auth::id();
-        //$users = User::with('Userinformations')->where('id', $id)->first();
-        $pic = Pic::where('user_id', $id)->where('default_destination', 1)->first();
-        $con = Consignee::where('user_id', $id)->where('default_destination', 1)->first();
-        //dd($con);
-        return view('account.consignee', compact('con', 'pic'));
+        $id = Auth::id(); //usersテーブルの16
+        $users = User::with('Userinformations')->where('id', $id)->first();
+        return view('account.consignee', compact('users'));
     }
 
     public function importer()
@@ -45,7 +42,7 @@ class AccountController extends Controller
 
     public function index()
     {
-        $data = Quotation::with(['invoices', 'invoices.order_confirms'])->where('consignee_no', Auth::id())->orderBy('created_at', 'desc')->paginate(10);
+        $data = Quotation::with(['invoices','invoices.order_confirms'])->where('consignee_no', Auth::id())->orderBy('created_at', 'desc')->paginate(10);
         $consignee = Userinformation::where('user_id', Auth::id())->first();
 
 
@@ -57,10 +54,10 @@ class AccountController extends Controller
 
     public function order()
     {
-        $id = Auth::id();
+        $id=Auth::id();
 
-        $od = Order::query();
-        $orders = $od->where('user_id', $id)->orderByDesc('created_at')->paginate(10);
+        $od=Order::query();
+        $orders=$od->where('user_id', $id)->orderByDesc('created_at')->paginate(10);
         return view('account/order', compact('orders'));
     }
 
@@ -71,9 +68,9 @@ class AccountController extends Controller
         $img = Image::where('order_no', $order->order_no)->get();
         //$imgはcollection
         if ($img->contains('about', 'payment')) {
-            $about = "送金画像あり";
+            $about="送金画像あり";
         } else {
-            $about = "送金画像なし";
+            $about="送金画像なし";
         }
         return view('account/order_each', compact('order', 'about'));
     }
@@ -93,18 +90,14 @@ class AccountController extends Controller
 
     public function edit()
     {
-
         $id = Auth::id();
         $user = User::with('Userinformations')->where('id', $id)->first();
-        $con = Consignee::where('user_id', $id)->first();
-        $pic = Pic::where('pic_id', $id)->first();
-
-        return view('account/edit', compact('user', 'con', 'pic'));
+        return view('account/edit', compact('user'));
     }
 
     public function quotation()
     {
-        $id = Auth::id();
+        $id=Auth::id();
         /*
         $orders = Quitation_serial_number::query()
         ->where('user_id', '=', $id)
@@ -113,7 +106,7 @@ class AccountController extends Controller
        */
         //最初はPDFを出した分だけを表示していたが全部出すように変更
         //$orders =Quotation::where('consignee_no', '=', $id)->where('create_PDF', '>=', '2022-01-01 00:00:01')->orderByDesc('id')->paginate(10);
-        $orders = Quotation::where('consignee_no', '=', $id)->orderByDesc('id')->paginate(10);
+        $orders =Quotation::where('consignee_no', '=', $id)->orderByDesc('id')->paginate(10);
 
         return view('account/quotation', compact('orders'));
     }
@@ -125,14 +118,15 @@ class AccountController extends Controller
         //$invoices=$iv->orderByDesc('created_at')->paginate(10);
         //return view('account/invoice',compact('invoices'));
 
-        $id = Auth::id();
+        $id=Auth::id();
         /*
         $orders = Invoice_serial_number::query()
         ->where('user_id', '=', $id)
         ->orderByDesc('id')
         ->paginate(10);
         */
-        $orders = Invoice::where('customers_id', '=', $id)->where('create_PDF', '>=', '2022-01-01 00:00:01')->orderByDesc('id')->paginate(10);;
+        $orders =Invoice::where('customers_id', '=', $id)->where('create_PDF', '>=', '2022-01-01 00:00:01')->orderByDesc('id')->paginate(10);
+        ;
 
         return view('account/invoice', compact('orders'));
     }
@@ -140,7 +134,6 @@ class AccountController extends Controller
     public function update(Request $request)
     {
         $request->validate([
-            'consignee_name' => 'required',
             'name' => 'required',
             'address_line1' => 'required',
             'address_line2' => 'required',
@@ -153,20 +146,12 @@ class AccountController extends Controller
 
         $id = $request->id;
         $user = User::find($id);
-
-        $user_id = $user->id;
+        $user_id= $user->id;
 
         $consignee = Consignee::where('user_id', $user_id)->where('default_destination', '1')->first();
+        $pic =Pic::where('user_id', $user_id)->where('default_destination', '1')->first();
 
-        //dd($user_id); 
-
-        if (!$consignee) {
-            $consignee = new Consignee();
-            $consignee->user_id = $user_id;
-            $consignee->default_destination = '1'; // デフォルトとして設定する場合
-        }
-        $consignee->consignee = $request->input('consignee_name');
-        $consignee->name = $request->input('name'); // ←ここでエラーになる可能性あり
+        $consignee->consignee = $request->input('name');
         $consignee->address_line1 = $request->input('address_line1');
         $consignee->address_line2 = $request->input('address_line2');
         $consignee->city = $request->input('city');
@@ -176,14 +161,6 @@ class AccountController extends Controller
         $consignee->phone = $request->input('phone');
         $consignee->save();
 
-        $pic = Pic::where('user_id', $user_id)->where('default_destination', '1')->first();
-
-        if (!$pic) {
-            $pic = new Pic();
-            $pic->user_id = $user_id;
-            $pic->default_destination = '1'; // これも必要に応じて設定
-            $pic->pic_id = $user_id;
-        }
         $pic->name = $request->input('person_name');
         $pic->email = $request->input('email');
         $pic->company_name = $request->input('company_name');
@@ -242,33 +219,21 @@ class AccountController extends Controller
 
         $id = $request->id;
         $user = User::find($id);
-        $user_id = $user->id;
-        $check = $request->default; //Set as default registration destination onかnull
-
-        $count = Consignee::where('user_id', $user_id)->count();
-        $count = $count + 1; //１を追加
+        $user_id= $user->id;
+        $check = $request->default;//Set as default registration destination onかnull
 
         //既存の1を消去
         if ($check) {
             $con = Consignee::where('user_id', $user_id)->where('default_destination', '1')->first();
-            if ($con) {
-                $con->default_destination = "";
-                $con->save();
-            }
-
+            $con->default_destination = "";
+            $con->save();
             $pc = Pic::where('user_id', $user_id)->where('default_destination', '1')->first();
-            if ($pc) {
-                $pc->default_destination = "";
-                $pc->save();
-            }
+            $pc->default_destination = "";
+            $pc->save();
         }
-
-
 
         $consignee = new Consignee();
         $pic = new Pic();
-
-
 
         $consignee->consignee = $request->input('name');
         $consignee->address_line1 = $request->input('address_line1');
@@ -279,11 +244,6 @@ class AccountController extends Controller
         $consignee->post_code = $request->input('zip');
         $consignee->phone = $request->input('phone');
         $consignee->user_id = $user_id;
-        $consignee->name = $request->input('person_name');
-
-
-        $consignee->pic_id = $user_id . "_" . $count;
-
         if ($check) {
             $consignee->default_destination = "1";
         }
@@ -294,7 +254,6 @@ class AccountController extends Controller
         $pic->company_name = $request->input('company_name');
         $pic->country = $request->input('person_in_charge_country');
         $pic->user_id = $user_id;
-        $pic->pic_id = $user_id . "_" . $count;
         if ($check) {
             $pic->default_destination = "1";
         }
@@ -306,72 +265,65 @@ class AccountController extends Controller
     public function change(Request $request)
     {
         $id = Auth::id();
-        $consignees = Consignee::where('user_id', $id)->get();
+        $consignees=Consignee::where('user_id', $id)->get();
         return view('account/change', compact('consignees'));
     }
     public function change_update(Request $request)
     {
-        $user_id = Auth::id();
 
-        // 既存のデフォルトConsigneeをリセット
+        //該当者の1を全部消す
+
+        $user_id= Auth::id();
         $con = Consignee::where('user_id', $user_id)->where('default_destination', '1')->first();
-
-        if ($con) {
-            $con->default_destination = "";
-            $con->save();
-        }
-
-        // 既存のデフォルトPicをリセット
+        $con->default_destination = "";
+        $con->save();
         $pc = Pic::where('user_id', $user_id)->where('default_destination', '1')->first();
-        if ($pc) {
-            $pc->default_destination = "";
-            $pc->save();
-        }
+        $pc->default_destination = "";
+        $pc->save();
 
-        // 新しくチェックされたconsigneeのidを取得
-        $id = $request->consignee;
-
+        $id = $request->consignee;//新しくチェックされたconsigneesのid
         $con = Consignee::where('id', $id)->first();
+        $pic_id = $con->pic_id;
+        $consignee = Consignee::where('pic_id', $pic_id)->first();
+        $consignee->default_destination = "1";
+        $consignee->save();
 
-        if (!$con) {
-            return redirect()->back()->with('error', '宛先が見つかりませんでした。');
-        }
-
-        //$pic_id = $con->pic_id;
-        $pic_id = $con->id;
-
-        // 同じ担当者のConsigneeを default に
-        $consignee = Consignee::where('id', $pic_id)->first();
-
-        if ($consignee) {
-            $consignee->default_destination = "1";
-            $consignee->save();
-        }
-
-        // Pic を default に
         $pc = Pic::where('id', $pic_id)->first();
-        //dd($pc);
-
-        if ($pc) {
-            $pc->default_destination = "1";
-            $pc->save();
-        }
+        $pc->default_destination = "1";
+        $pc->save();
 
         return redirect()->route('account.index');
     }
 
 
-
     public function importer_update(Request $request)
     {
+        /*
+        $request->validate([
+            'name' => 'required',
+            'address_line1' => 'required',
+            'address_line2' => 'required',
+            'city' => 'required',
+            'state' => 'required',
+            'country' => 'required',
+            'zip' => 'required',
+            'phone' => 'required',
+        ]);
+        */
 
         $id = Auth::id();
         $main = User::with('Userinformations')->where('id', $id)->first();
         $main = $main->Userinformations;
 
+        /*
+        $id = $request->id;
+        $user = User::find($id);
+        $user_id= $user->id;
+        */
+
         $main->importer_name = $request->importer_name;
         $main->bill_company_address_line1 = $request->bill_company_address_line1;
-        $main->bill_company_address_line2 = $request->bill_company_address_line2;
+        $main->bill_company_address_line2 = $request->bill_company_address_line1;
         $main->bill_company_city = $request->bill_company_city;
         $main->bill_company_state = $request->bill_company_state;
         $main->bill_company_country = $request->bill_company_country;
@@ -388,7 +340,8 @@ class AccountController extends Controller
 
         $main->save();
 
-        return view('account.importer', compact('main'));
 
+
+        return view('account.importer', compact('main'));
     }
 }
