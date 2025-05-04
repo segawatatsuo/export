@@ -9,7 +9,7 @@ use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 
-use App\Model\Pic;//Person in charge
+use App\Model\Pic; //Person in charge
 
 class RegisterController extends Controller
 {
@@ -72,6 +72,7 @@ class RegisterController extends Controller
      */
     protected function create(array $data)
     {
+        /*
         //元々はreturn User::create([ だったのを戻り値モデルを変数に入れた
          $userdatamodel=User::create([
             'name' => $data['name'],
@@ -97,17 +98,45 @@ class RegisterController extends Controller
             'company_name' => $data['company_name'],
         ]);
 
-        //$pic = new Pic();
-        //$pic_id = $pic->latest('id')->first();
-        //$pic_id = $pic_id->id;
-        //PicのレコードIDをセッションで使う
-        
+       
         session(['pic_id' => $pic_id]);
-
-
 
         //user登録されたモデルを返す
         return $userdatamodel;
+        */
+
+        // 会社名の頭2文字を initial に
+        $initial = mb_substr($data['company_name'], 0, 2);
+
+        // User モデルの作成（initial を含める）
+        $user = User::create([
+            'name' => $data['name'],
+            'email' => $data['email'],
+            'password' => Hash::make($data['password']),
+            'country' => $data['country'],
+            'company_name' => $data['company_name'],
+            'initial' => $initial,
+        ]);
+
+        // User作成直後のIDを取得（安全のため create() の戻り値から取得）
+        $user_id = $user->id;
+
+        // Pic モデルの作成
+        Pic::create([
+            'default_destination' => '1',
+            'user_id' => $user_id,
+            'pic_id' => $user_id,
+            'name' => $data['name'],
+            'email' => $data['email'],
+            'country' => $data['country'],
+            'company_name' => $data['company_name'],
+        ]);
+
+        // セッションにpic_idを保存
+        session(['pic_id' => $user_id]);
+
+        // 作成した User モデルを返す
+        return $user;
     }
 
 

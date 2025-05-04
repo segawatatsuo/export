@@ -96,8 +96,14 @@ class AccountController extends Controller
 
         $id = Auth::id();
         $user = User::with('Userinformations')->where('id', $id)->first();
-        $con = Consignee::where('user_id', $id)->first();
-        $pic = Pic::where('pic_id', $id)->first();
+        //$con = Consignee::where('user_id', $id)->first();
+        //$pic = Pic::where('pic_id', $id)->first();
+        
+        $pic = Pic::where('user_id', $id)->where('default_destination', 1)->first();
+        $con = Consignee::where('user_id', $id)->where('default_destination', 1)->first();
+
+        
+
 
         return view('account/edit', compact('user', 'con', 'pic'));
     }

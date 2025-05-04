@@ -770,7 +770,15 @@ class OrderController extends Controller
                 $from = '/Users/segawa/www/html/fedex-ccm/public/storage/order/' . $file_name;
                 $to = '/Users/segawa/www/html/ccmapp/public/storage/order/' . $file_name;
                 copy($from, $to);
-            } else {
+            } elseif (strpos(__DIR__, '/home/segawa/export') !== false) {
+                //ubuntu
+                $from = '/home/segawa/export/public/storage/order/' . $file_name;
+                $to = '/home/segawa/ccmapp/public/storage/order/' . $file_name;
+                copy($from, $to);
+            }  
+            
+            
+            else {
                 //お名前用
                 $from = '/home/r2325683/export/public/storage/order/' . $file_name;
                 $to = '/home/r2325683/ccmapp/public/storage/order/' . $file_name;

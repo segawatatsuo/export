@@ -33,34 +33,37 @@ use App\Model\Pic;
 
 class UserinformationController extends Controller
 {
-    //初めての人の住所登録 Consignee
+    //Consignee(送り先登録)が初めての人の住所登録を行う (普通にPersonInChargeを済ませ、見積もりに移行した場合のコンサイニー住所登録画面)
     public function entry(Request $request)
     {
+
+        //dd("entry");
 
         $type = $request->type;
         $user_id = $request->user_id;
         $quotation_no = $request->quotation_no;
 
-        $user = new Userinformation();
+        $user_information = new Userinformation();
 
-        $user->user_id = $request->user_id;
-        $user->consignee = $request->consignee;
-        $user->address_line1 = $request->address_line1;
-        $user->address_line2 = $request->address_line2;
-        $user->city = $request->city;
-        $user->state = $request->state;
-        $user->country_codes = $request->country_codes;
-        $user->zip = $request->zip;
-        $user->phone = $request->phone;
-        $user->person = $request->person;
-        $user->save();
+        $user_information->user_id = $request->user_id;
+        $user_information->consignee = $request->consignee;
+        $user_information->address_line1 = $request->address_line1;
+        $user_information->address_line2 = $request->address_line2;
+        $user_information->city = $request->city;
+        $user_information->state = $request->state;
+        $user_information->country_codes = $request->country_codes;
+        $user_information->zip = $request->zip;
+        $user_information->phone = $request->phone;
+        $user_information->person = $request->person;
+        $user_information->save();
 
-        //pic番号を取り出す
-        $pic = Pic::where('user_id', $user_id)->first();
-        session(['pic_id' => $pic->pic_id]);
+        //pic番号(Person in charge)を取り出す
+        $person_in_charge = Pic::where('user_id', $user_id)->first();
+        session(['pic_id' => $person_in_charge->pic_id]);
 
         //consigneeテーブルにも保存　2024-1-5
         $consignee = new Consignee();
+
         $consignee->user_id = $request->user_id;
         $consignee->consignee = $request->consignee;
         $consignee->address_line1 = $request->address_line1;
@@ -72,7 +75,7 @@ class UserinformationController extends Controller
         $consignee->phone = $request->phone;
         $consignee->name = $request->person;
         $consignee->default_destination = "1"; //既定に設定
-        $consignee->pic_id = $pic->pic_id;
+        $consignee->pic_id = $person_in_charge->pic_id;
         $consignee->save();
 
 
@@ -81,7 +84,7 @@ class UserinformationController extends Controller
 
         $quotations = Quotation::where('quotation_no', $quotation_no)->get();
         $shipper = $quotations[0]->shipper;
-        //$consignee = $quotations[0]->consignee;
+
         $consignee = $request->consignee;
 
         $port_of_loading = $quotations[0]->port_of_loading;
@@ -128,7 +131,7 @@ class UserinformationController extends Controller
         session()->put('expiry_days', $expiry_days2); //15days
         session()->put('expiryaddday', $expiryaddday); //Apr 26 2021
 
-        return view('quotation', compact('quotation_no', 'preference_data', 'items', 'ctn_total', 'quantity_total', 'amount_total', 'sailing_on', 'user', 'type', 'shipper', 'consignee', 'port_of_loading', 'arriving_on', 'expiry_days2'));
+        return view('quotation', compact('quotation_no', 'preference_data', 'items', 'ctn_total', 'quantity_total', 'amount_total', 'sailing_on', 'user_information', 'type', 'shipper', 'consignee', 'port_of_loading', 'arriving_on', 'expiry_days2'));
     }
 
 
@@ -136,15 +139,20 @@ class UserinformationController extends Controller
     public function invoice_confirm(Request $request)
     {
 
+       
+
         $type = $request->type;
 
         $uuid = $request->quotation_no;
         $user_id = Auth::id();
-        $Userinformations = Userinformation::where('user_id', '=', $user_id)->get();
+        $user_information = Userinformation::where('user_id', '=', $user_id)->get();
 
 
         //初めての場合
-        if ($Userinformations->first()->bill_company_address_line1 == null) {
+        if ($user_information->first()->bill_company_address_line1 == null) {
+
+            //dd("invoice_confirm_first");
+
             //フォームから最終目的地を受け取り登録してから移動
             $final_destination = $request->get('final_destination');
             $quotation_no = $request->quotation_no;
@@ -166,24 +174,27 @@ class UserinformationController extends Controller
             ///////////////////////////////
             //インボイス番号作成
             //Userinformationの１行目からuser_idを取り出しイニシャルを探してインボイスNoを作成し保存
-            //イニシャル
-            $ui = Userinformation::where('user_id', $user_id)->first();
-            $initial = $ui->initial;
-            //国
-            $country_code = $ui->country_codes;
-            $un = User::where('id', '=', $user_id)->first();
-            //国２文字
-            $ct = strtoupper(substr($un->country, 0, 2));
-            //会社名２文字
-            $ui = Userinformation::where('user_id', '=', $user_id)->first();
 
-            if (strtoupper(substr($ui->initial, 0, 2)) != null) {
-                $cp = strtoupper(substr($ui->initial, 0, 2));
+            
+            $user_information = Userinformation::where('user_id', $user_id)->first();
+
+            //この時点ではまだイニシャルがない場合がある。ただしマイページに先にアクセスされると、イニシャルは登録済みになっている可能性がある
+            $initial = $user_information->initial;
+            //国
+            $country_code = $user_information->country_codes;
+            $user = User::where('id', '=', $user_id)->first();
+            //国２文字
+            $country_short = strtoupper(substr($user->country, 0, 2));
+            //会社名２文字
+            $user_information = Userinformation::where('user_id', '=', $user_id)->first();
+
+            if (strtoupper(substr($user_information->initial, 0, 2)) != null) {
+                $initial = strtoupper(substr($user_information->initial, 0, 2));
             } else {
-                $cp = strtoupper(substr($ui->company_name, 0, 2));
+                $initial = strtoupper(substr($user_information->company_name, 0, 2));
             }
-            if ($cp == "") {
-                $cp = "CC";
+            if ($initial == "") {
+                $initial = "CC";
             }
             //連番
             $latestOrder = Invoice_counter::where('id', 1)->first();
@@ -199,10 +210,14 @@ class UserinformationController extends Controller
             }
             $no = $latestOrder->count;
 
-            $invoice_no =  $ct . $cp . date('md') . '_' . str_pad($no, 2, 0, STR_PAD_LEFT);;
+            $invoice_no =  $country_short . $initial . date('ymd') . '_' . str_pad($no, 2, 0, STR_PAD_LEFT);;
             $output = $invoice_no . '.pdf';
             $print_no = $invoice_no;
             ///////////////////////////////
+            //インボイス番号作成END
+            ///////////////////////////////
+
+
 
             //uuid
             $uuid = $quotation_no;
@@ -227,6 +242,7 @@ class UserinformationController extends Controller
             $shipper = $quotations[0]->shipper;
 
             $consignee_no = $quotations[0]->consignee_no;
+
             $consignee = Userinformation::where('user_id', $consignee_no)->first()->consignee;
             $port_of_loading = $quotations[0]->port_of_loading;
             $final_destination = $quotations[0]->final_destination;
@@ -239,13 +255,13 @@ class UserinformationController extends Controller
             $company_name = $main->company_name;
             $country = $main->country;
 
-            $address_line1 = $ui->address_line1;
-            $address_line2 = $ui->address_line2;
-            $city = $ui->city;
-            $state = $ui->state;
-            $zip = $ui->zip;
-            $phone = $ui->phone;
-            $person = $ui->person;
+            $address_line1 = $user_information->address_line1;
+            $address_line2 = $user_information->address_line2;
+            $city = $user_information->city;
+            $state = $user_information->state;
+            $zip = $user_information->zip;
+            $phone = $user_information->phone;
+            $person = $user_information->person;
             //イニシャルを２文字で作成
             $initial = substr($company_name, 0, 2);
 
@@ -305,15 +321,15 @@ class UserinformationController extends Controller
             $user = [
                 'user_id' => $user_id,
                 'consignee' => $consignee,
-                'address_line1' => $ui->address_line1,
-                'address_line2' => $ui->address_line2,
-                'city' => $ui->city,
-                'state' => $ui->state,
+                'address_line1' => $user_information->address_line1,
+                'address_line2' => $user_information->address_line2,
+                'city' => $user_information->city,
+                'state' => $user_information->state,
                 'country' => User::where('id', $user_id)->first()->country,
-                'country_codes' => $ui->country_codes,
-                'zip' => $ui->zip,
-                'phone' => $ui->phone,
-                'fax' => $ui->fax
+                'country_codes' => $user_information->country_codes,
+                'zip' => $user_information->zip,
+                'phone' => $user_information->phone,
+                'fax' => $user_information->fax
             ];
 
 
@@ -367,10 +383,13 @@ class UserinformationController extends Controller
             //インボイスメール
             Mail::to($to)->bcc($bcc)->send(new InvoiceMail($content, $subject, $items));
 
-
-
             return view('invoice_entryform', compact('uuid', 'user_id', 'final_destination', 'main', 'user', 'items', 'total', 'type'));
+
+
         } else {
+
+
+            //dd("invoice_confirm_manytimes");
 
 
             $user_id = Auth::id();
@@ -385,20 +404,20 @@ class UserinformationController extends Controller
             //インボイス番号作成
             //Userinformationの１行目からuser_idを取り出しイニシャルを探してインボイスNoを作成し保存
             //イニシャル
-            $ui = Userinformation::where('user_id', $user_id)->first();
-            $initial = $ui->initial;
+            $user_information = Userinformation::where('user_id', $user_id)->first();
+            $initial = $user_information->initial;
             //国
-            $country_code = $ui->country_codes;
+            $country_code = $user_information->country_codes;
             $un = User::where('id', '=', $user_id)->first();
             //国２文字
             $ct = strtoupper(substr($un->country, 0, 2));
             //会社名２文字
-            $ui = Userinformation::where('user_id', '=', $user_id)->first();
+            $user_information = Userinformation::where('user_id', '=', $user_id)->first();
 
-            if (strtoupper(substr($ui->initial, 0, 2)) != null) {
-                $cp = strtoupper(substr($ui->initial, 0, 2));
+            if (strtoupper(substr($user_information->initial, 0, 2)) != null) {
+                $cp = strtoupper(substr($user_information->initial, 0, 2));
             } else {
-                $cp = strtoupper(substr($ui->company_name, 0, 2));
+                $cp = strtoupper(substr($user_information->company_name, 0, 2));
             }
             if ($cp == "") {
                 $cp = "CC";
@@ -501,15 +520,15 @@ class UserinformationController extends Controller
             $user = [
                 'user_id' => $user_id,
                 'consignee' => $consignee,
-                'address_line1' => $ui->address_line1,
-                'address_line2' => $ui->address_line2,
-                'city' => $ui->city,
-                'state' => $ui->state,
+                'address_line1' => $user_information->address_line1,
+                'address_line2' => $user_information->address_line2,
+                'city' => $user_information->city,
+                'state' => $user_information->state,
                 'country' => User::where('id', $user_id)->first()->country,
-                'country_codes' => $ui->country_codes,
-                'zip' => $ui->zip,
-                'phone' => $ui->phone,
-                'fax' => $ui->fax
+                'country_codes' => $user_information->country_codes,
+                'zip' => $user_information->zip,
+                'phone' => $user_information->phone,
+                'fax' => $user_information->fax
             ];
 
 
@@ -560,28 +579,31 @@ class UserinformationController extends Controller
     //初めての人がHeadOfficeを入力後、Invoiceに移動する
     public function invoice_entry_and_go(Request $request)
     {
+
+        
         $user_id = Auth::id();
         $main = [];
         $type = $request->type;
 
-        $ui = Userinformation::where('user_id', $user_id)->first();
-        $ui->importer_name = $request->importer_name;
-        $ui->bill_company_address_line1 = $request->bill_company_address_line1;
-        $ui->bill_company_address_line2 = $request->bill_company_address_line2;
-        $ui->bill_company_city = $request->bill_company_city;
-        $ui->bill_company_state = $request->bill_company_state;
-        $ui->bill_company_country = $request->bill_company_country;
-        $ui->bill_company_zip = $request->bill_company_zip;
-        $ui->bill_company_phone = $request->bill_company_phone;
-        $ui->president = $request->president;
-        $ui->initial = $request->initial;
-        $ui->industry = $request->industry;
-        $ui->business_items = $request->business_items;
-        $ui->customer_name = $request->customer_name;
-        $ui->fedex = $request->fedex;
-        $ui->sns = $request->sns;
-        $ui->website = $request->website;
-        $ui->save();
+        $user_information = Userinformation::where('user_id', $user_id)->first();
+
+        $user_information->importer_name = $request->importer_name;
+        $user_information->bill_company_address_line1 = $request->bill_company_address_line1;
+        $user_information->bill_company_address_line2 = $request->bill_company_address_line2;
+        $user_information->bill_company_city = $request->bill_company_city;
+        $user_information->bill_company_state = $request->bill_company_state;
+        $user_information->bill_company_country = $request->bill_company_country;
+        $user_information->bill_company_zip = $request->bill_company_zip;
+        $user_information->bill_company_phone = $request->bill_company_phone;
+        $user_information->president = $request->president;
+        $user_information->initial = $request->initial;
+        $user_information->industry = $request->industry;
+        $user_information->business_items = $request->business_items;
+        $user_information->customer_name = $request->customer_name;
+        $user_information->fedex = $request->fedex;
+        $user_information->sns = $request->sns;
+        $user_information->website = $request->website;
+        $user_information->save();
 
         //2024 1-6 headoffice
         $head_office = new HeadOffice();
@@ -615,20 +637,23 @@ class UserinformationController extends Controller
         //インボイス番号作成
         //Userinformationの１行目からuser_idを取り出しイニシャルを探してインボイスNoを作成し保存
         //イニシャル
-        $ui = Userinformation::where('user_id', $user_id)->first();
-        $initial = $ui->initial;
+        //$user_information = Userinformation::where('user_id', $user_id)->first();
+        $initial = $user_information->initial;
+
+
         //国
-        $country_code = $ui->country_codes;
+        $country_code = $user_information->country_codes;
+        
         $un = User::where('id', '=', $user_id)->first();
         //国２文字
         $ct = strtoupper(substr($un->country, 0, 2));
         //会社名２文字
-        $ui = Userinformation::where('user_id', '=', $user_id)->first();
+        $user_information = Userinformation::where('user_id', '=', $user_id)->first();
 
-        if (strtoupper(substr($ui->initial, 0, 2)) != null) {
-            $cp = strtoupper(substr($ui->initial, 0, 2));
+        if (strtoupper(substr($user_information->initial, 0, 2)) != null) {
+            $cp = strtoupper(substr($user_information->initial, 0, 2));
         } else {
-            $cp = strtoupper(substr($ui->company_name, 0, 2));
+            $cp = strtoupper(substr($user_information->company_name, 0, 2));
         }
         if ($cp == "") {
             $cp = "CC";
@@ -649,7 +674,7 @@ class UserinformationController extends Controller
 
         $shortYear = date('y');
         //$invoice_no =  $ct . $cp . date('md') . '_' . str_pad($no, 2, 0, STR_PAD_LEFT);
-        $invoice_no =  $ct . $cp .$shortYear .date('md') . '_' . str_pad($no, 2, 0, STR_PAD_LEFT);
+        $invoice_no =  $ct . $cp .date('ymd') . '_' . str_pad($no, 2, 0, STR_PAD_LEFT);
 
         $output = $invoice_no . '.pdf';
         $print_no = $invoice_no;
@@ -729,15 +754,15 @@ class UserinformationController extends Controller
         $user = [
             'user_id' => $user_id,
             'consignee' => $consignee,
-            'address_line1' => $ui->address_line1,
-            'address_line2' => $ui->address_line2,
-            'city' => $ui->city,
-            'state' => $ui->state,
+            'address_line1' => $user_information->address_line1,
+            'address_line2' => $user_information->address_line2,
+            'city' => $user_information->city,
+            'state' => $user_information->state,
             'country' => User::where('id', $user_id)->first()->country,
-            'country_codes' => $ui->country_codes,
-            'zip' => $ui->zip,
-            'phone' => $ui->phone,
-            'fax' => $ui->fax
+            'country_codes' => $user_information->country_codes,
+            'zip' => $user_information->zip,
+            'phone' => $user_information->phone,
+            'fax' => $user_information->fax
         ];
 
 
@@ -784,6 +809,8 @@ class UserinformationController extends Controller
     //初めてインボイスを行う場合の住所登録
     public function invoice_entry(Request $request)
     {
+        //dd("invoice_entry");
+
         $request->validate(
             ['initial' => 'required|size:2',],
             ['initial.required' => '2 letters',]
@@ -829,28 +856,28 @@ class UserinformationController extends Controller
         $arriving_on = $quotations[0]->arriving_on;
         $expiry = $quotations[0]->expiry;
         $preference_data = Preference::first();
-        $ui = Userinformation::where('user_id', $user_id)->first();
-        $initial = $ui->initial;
+        $user_information = Userinformation::where('user_id', $user_id)->first();
+        $initial = $user_information->initial;
 
 
         ///////////////////////////////
         //インボイス番号作成
         //Userinformationの１行目からuser_idを取り出しイニシャルを探してインボイスNoを作成し保存
         //イニシャル
-        $ui = Userinformation::where('user_id', $user_id)->first();
-        $initial = $ui->initial;
+        $user_information = Userinformation::where('user_id', $user_id)->first();
+        $initial = $user_information->initial;
         //国
-        $country_code = $ui->country_codes;
+        $country_code = $user_information->country_codes;
         $un = User::where('id', '=', $user_id)->first();
         //国２文字
         $ct = strtoupper(substr($un->country, 0, 2));
         //会社名２文字
-        $ui = Userinformation::where('user_id', '=', $user_id)->first();
+        $user_information = Userinformation::where('user_id', '=', $user_id)->first();
 
-        if (strtoupper(substr($ui->initial, 0, 2)) != null) {
-            $cp = strtoupper(substr($ui->initial, 0, 2));
+        if (strtoupper(substr($user_information->initial, 0, 2)) != null) {
+            $cp = strtoupper(substr($user_information->initial, 0, 2));
         } else {
-            $cp = strtoupper(substr($ui->company_name, 0, 2));
+            $cp = strtoupper(substr($user_information->company_name, 0, 2));
         }
         if ($cp == "") {
             $cp = "CC";
@@ -885,15 +912,15 @@ class UserinformationController extends Controller
             [
                 'user_id' => $user_id,
                 'consignee' => $consignee,
-                'address_line1' => $ui->address_line1,
-                'address_line2' => $ui->address_line2,
-                'city' => $ui->city,
-                'state' => $ui->state,
+                'address_line1' => $user_information->address_line1,
+                'address_line2' => $user_information->address_line2,
+                'city' => $user_information->city,
+                'state' => $user_information->state,
                 'country' => User::where('id', $user_id)->first()->country,
-                'country_codes' => $ui->country_codes,
-                'zip' => $ui->zip,
-                'phone' => $ui->phone,
-                'fax' => $ui->fax
+                'country_codes' => $user_information->country_codes,
+                'zip' => $user_information->zip,
+                'phone' => $user_information->phone,
+                'fax' => $user_information->fax
             ];
         $main =
             [

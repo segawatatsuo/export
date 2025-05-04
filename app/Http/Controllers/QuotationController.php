@@ -34,16 +34,9 @@ class QuotationController extends Controller
             session()->put(['article' => 'Air Stocking']);
         }
         //カテゴリーのユニークだけ(ここではAIRSTOCKINGだけだが、今後ネールなどが入ってくる) session('article')は'Air Stocking'など
-        //戻り値は "category" => "Air Stocking"
         $categorys = Product::where('hidden_item', '!=', '1')->where('category', session('article'))->groupBy('category')->orderBy('sort_order', 'asc')->get(['category']);
-
-        //Air Stocking中分類 session('article')は'Air Stocking'など
-        //戻り値は配列 "group" => "PREMIUM-SILK","group" => "PREMIUM-SILK QT","group" => "DIAMOND LEGS","group" => "DIAMOND LEGS DQ"
         $groups = Product::where('hidden_item', '!=', '1')->where('category', session('article'))->groupBy('group')->orderBy('sort_order', 'asc')->get(['group']);
-
-        //グループ別の商品配列
         $items = [];
-        //戻り値例　$items[0][0]['product_name']は　"AIRSTOCKING PREMIER SILK 120G LIGHT NATURAL"
         foreach ($groups as $g) {
             $b = Product::where('hidden_item', '!=', '1')->where('group', $g->group)->orderBy('sort_order', 'asc')->get();
             array_push($items, $b);
@@ -56,16 +49,7 @@ class QuotationController extends Controller
                 $groups = array_unique($groups);
             }
         }
-        /* $groups
-        array:4 [▼
-        0 => "PREMIUM-SILK"
-        1 => "PREMIUM-SILK QT"
-        2 => "DIAMOND LEGS"
-        3 => "DIAMOND LEGS DQ"
-        ]
-        */
 
-        //　$codes　配列に全部の商品コード(PS01,PS02...)を取り出す
         $codes = [];
         foreach ($items as $item) {
             foreach ($item as $val) {
@@ -73,37 +57,10 @@ class QuotationController extends Controller
                 $codes = array_merge($codes, $hoge);
             }
         }
-        /* $codes 結果
-        array:20 [▼
-        "PS01" => "PREMIUM-SILK"
-        "PS02" => "PREMIUM-SILK"
-        "PS03" => "PREMIUM-SILK"
-        "PS04" => "PREMIUM-SILK"
-        "PS05" => "PREMIUM-SILK"
-        "QT01" => "PREMIUM-SILK QT"
-        "QT02" => "PREMIUM-SILK QT"
-        "QT03" => "PREMIUM-SILK QT"
-        "QT04" => "PREMIUM-SILK QT"
-        "QT05" => "PREMIUM-SILK QT"
-        "DL01" => "DIAMOND LEGS"
-        "DL02" => "DIAMOND LEGS"
-        "DL03" => "DIAMOND LEGS"
-        "DL04" => "DIAMOND LEGS"
-        "DL05" => "DIAMOND LEGS"
-        "DQ01" => "DIAMOND LEGS DQ"
-        "DQ02" => "DIAMOND LEGS DQ"
-        "DQ03" => "DIAMOND LEGS DQ"
-        "DQ04" => "DIAMOND LEGS DQ"
-        "DQ05" => "DIAMOND LEGS DQ"
-        ]
-        */
-
         //fedexかairかship
         $type = $request->type;
         //HTMLフォーム送信のnameがitemのものだけ取得
         $type = session()->get('type');
-
-
 
 
         //数量の制限値
@@ -135,30 +92,6 @@ class QuotationController extends Controller
             //全角数字を半角に
             $GOODS[$key] = mb_convert_kana($request->get($key), "n");
         }
-        /* $GOODS
-            array:20 [▼
-            "PS01" => "20"
-            "PS02" => "30"
-            "PS03" => "20"
-            "PS04" => "20"
-            "PS05" => "20"
-            "QT01" => ""
-            "QT02" => ""
-            "QT03" => ""
-            "QT04" => ""
-            "QT05" => ""
-            "DL01" => ""
-            "DL02" => ""
-            "DL03" => ""
-            "DL04" => ""
-            "DL05" => ""
-            "DQ01" => ""
-            "DQ02" => ""
-            "DQ03" => ""
-            "DQ04" => ""
-            "DQ05" => ""
-            ]
-        */
 
         //アイテムごとを1つづつの配列に変換
         $array = [];
@@ -166,39 +99,6 @@ class QuotationController extends Controller
             $ps = $codes[$key];
             $array[] = [$ps, $val];
         }
-        /*
-        array:20 [▼
-        0 => array:2 [▼
-            0 => "PREMIUM-SILK"
-            1 => "20"
-        ]
-        1 => array:2 [▼
-            0 => "PREMIUM-SILK"
-            1 => "30"
-        ]
-        2 => array:2 [▼
-            0 => "PREMIUM-SILK"
-            1 => "20"
-        ]
-        3 => array:2 [▶]
-        4 => array:2 [▶]
-        5 => array:2 [▶]
-        6 => array:2 [▶]
-        7 => array:2 [▶]
-        8 => array:2 [▶]
-        9 => array:2 [▶]
-        10 => array:2 [▶]
-        11 => array:2 [▶]
-        12 => array:2 [▶]
-        13 => array:2 [▶]
-        14 => array:2 [▶]
-        15 => array:2 [▶]
-        16 => array:2 [▶]
-        17 => array:2 [▶]
-        18 => array:2 [▶]
-        19 => array:2 [▶]
-        ]
-        */
 
         //各グループ別の集計
         foreach ($groups as $value) {
@@ -210,15 +110,6 @@ class QuotationController extends Controller
             }
             $group_total[$value] = $num;
         }
-        /*
-        $group_total
-        array:4 [▼
-        "PREMIUM-SILK" => 110
-        "PREMIUM-SILK QT" => 0
-        "DIAMOND LEGS" => 0
-        "DIAMOND LEGS DQ" => 0
-        ]
-        */
 
         /*エラーメッセージ作成 */
         $err = array();
@@ -258,17 +149,6 @@ class QuotationController extends Controller
 
         if ($type == "air") {
 
-            /*
-            foreach ($GOODS as $key => $val) {
-                //空欄は無視して最低数より少ない場合（1アイテムは最低20）
-                if ($val >= 1 and $val < $air1_min) {
-                    //$err=array($key.'は'.$air1_min.'より多くしてください');
-                    $name = Product::where('product_code', '=', $key)->first();
-                    $err = array('[' . $key . '] ' . $name->kind . ' should be more than ' . $air1_min);
-                    $err1 = (array_merge($err1, $err));
-                }
-            }
-            */
             //Airは各アイテムの在庫数以上の注文もしくは20($air1_min)以下はエラーにする
             foreach ($GOODS as $key => $val) {
                 $zaiko = Product::whereproduct_code($key)->first()->stock;
@@ -287,15 +167,6 @@ class QuotationController extends Controller
                 $err2 = array('Make sure the total cartons of items is ' . $air1_low . ' or more');
             }
 
-            //各行の少計数が最低最大に収まっているか
-            /*
-            foreach ($group_total as $val) {
-                if ($val >= 1 and $val < $air1_low or $val > $air2_up) {
-                    //$err2=array('1アイテムの合計数が'.$air1_low.'以上'.$air2_up.'以下になるようにしてください');
-                    $err2 = array('Make sure the total cartons of items is between ' . $air1_low . ' and ' . $air2_up);
-                }
-            }
-            */
             /*配列に追加*/
             $err = (array_merge($err1, $err2));
             $route_name = "air";
@@ -347,14 +218,6 @@ class QuotationController extends Controller
             }
             //各行の少計数が最低最大に収まっているか
 
-            /* 2023-11-8
-            foreach ($group_total as $val) {
-                if ($val >= 1 and $val < $ship_low or $val > $ship_up) {
-                    //$err2=array('1アイテムの合計数が'.$ship_low.'以上'.$ship_up.'以下になるようにしてください');
-                    $err2 = array('Make sure the total cartons of items is ' . $ship_low . ' or more');
-                }
-            }
-            */
             //2023-11-8 各行ではなく全体の数が500以下の場合エラーに変更
             $array_sum = array_sum($group_total);
             if ($array_sum >= 1 and $array_sum < $ship_low or $array_sum > $ship_up) {
@@ -496,8 +359,6 @@ class QuotationController extends Controller
         }
 
 
-        //Sailing on(出航予定月)
-        //$addday=SailingOn::find(1)->number_of_days;
         //現在の日付
         $date = new Carbon('today');
         //40日後
@@ -505,10 +366,6 @@ class QuotationController extends Controller
 
         $year = $date->format('Y');
         $month = $date->format('M');
-        //$sailing_on = $month . ',' . $year;
-        //session()->put('sailing_on',$sailing_on);
-
-
 
         $date = new Carbon('today');
         //7日後
