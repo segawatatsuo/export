@@ -27,7 +27,6 @@ use App\Model\Emailtext;
 use App\Model\Consignee;
 use App\Model\HeadOffice;
 use App\Model\Pic;
-use App\Model\Invoice;
 
 //use App\Http\Controllers\QuotationController;
 
@@ -140,12 +139,11 @@ class UserinformationController extends Controller
     public function invoice_confirm(Request $request)
     {
 
-
+       
 
         $type = $request->type;
 
         $uuid = $request->quotation_no;
-
         $user_id = Auth::id();
         $user_information = Userinformation::where('user_id', '=', $user_id)->get();
 
@@ -177,7 +175,7 @@ class UserinformationController extends Controller
             //インボイス番号作成
             //Userinformationの１行目からuser_idを取り出しイニシャルを探してインボイスNoを作成し保存
 
-
+            
             $user_information = Userinformation::where('user_id', $user_id)->first();
 
             //この時点ではまだイニシャルがない場合がある。ただしマイページに先にアクセスされると、イニシャルは登録済みになっている可能性がある
@@ -386,6 +384,8 @@ class UserinformationController extends Controller
             Mail::to($to)->bcc($bcc)->send(new InvoiceMail($content, $subject, $items));
 
             return view('invoice_entryform', compact('uuid', 'user_id', 'final_destination', 'main', 'user', 'items', 'total', 'type'));
+
+
         } else {
 
 
@@ -437,7 +437,7 @@ class UserinformationController extends Controller
             $no = $latestOrder->count;
 
             $shortYear = date('y');
-            $invoice_no =  $ct . $cp . $shortYear . date('md') . '_' . str_pad($no, 2, 0, STR_PAD_LEFT);
+            $invoice_no =  $ct . $cp .$shortYear .date('md') . '_' . str_pad($no, 2, 0, STR_PAD_LEFT);
 
             $output = $invoice_no . '.pdf';
             $print_no = $invoice_no;
@@ -580,59 +580,51 @@ class UserinformationController extends Controller
     public function invoice_entry_and_go(Request $request)
     {
 
-
+        
         $user_id = Auth::id();
-        //すでにhead_offices登録されているか確認(戻るボタンで前画面に戻って再度登録されるのを防ぐ)
-        $head_office = HeadOffice::where('user_id', $user_id)->first();
-
         $main = [];
         $type = $request->type;
 
         $user_information = Userinformation::where('user_id', $user_id)->first();
 
-        if ($head_office == null) {
-            $user_information->importer_name = $request->importer_name;
-            $user_information->bill_company_address_line1 = $request->bill_company_address_line1;
-            $user_information->bill_company_address_line2 = $request->bill_company_address_line2;
-            $user_information->bill_company_city = $request->bill_company_city;
-            $user_information->bill_company_state = $request->bill_company_state;
-            $user_information->bill_company_country = $request->bill_company_country;
-            $user_information->bill_company_zip = $request->bill_company_zip;
-            $user_information->bill_company_phone = $request->bill_company_phone;
-            $user_information->president = $request->president;
-            $user_information->initial = $request->initial;
-            $user_information->industry = $request->industry;
-            $user_information->business_items = $request->business_items;
-            $user_information->customer_name = $request->customer_name;
-            $user_information->fedex = $request->fedex;
-            $user_information->sns = $request->sns;
-            $user_information->website = $request->website;
-            $user_information->save();
-        }
+        $user_information->importer_name = $request->importer_name;
+        $user_information->bill_company_address_line1 = $request->bill_company_address_line1;
+        $user_information->bill_company_address_line2 = $request->bill_company_address_line2;
+        $user_information->bill_company_city = $request->bill_company_city;
+        $user_information->bill_company_state = $request->bill_company_state;
+        $user_information->bill_company_country = $request->bill_company_country;
+        $user_information->bill_company_zip = $request->bill_company_zip;
+        $user_information->bill_company_phone = $request->bill_company_phone;
+        $user_information->president = $request->president;
+        $user_information->initial = $request->initial;
+        $user_information->industry = $request->industry;
+        $user_information->business_items = $request->business_items;
+        $user_information->customer_name = $request->customer_name;
+        $user_information->fedex = $request->fedex;
+        $user_information->sns = $request->sns;
+        $user_information->website = $request->website;
+        $user_information->save();
 
         //2024 1-6 headoffice
         $head_office = new HeadOffice();
-
-        if ($head_office == null) {
-            $head_office->company_name = $request->importer_name;
-            $head_office->address_line1 = $request->bill_company_address_line1;
-            $head_office->address_line2 = $request->bill_company_address_line2;
-            $head_office->city = $request->bill_company_city;
-            $head_office->state = $request->bill_company_state;
-            $head_office->country = $request->bill_company_country;
-            $head_office->zip = $request->bill_company_zip;
-            $head_office->phone = $request->bill_company_phone;
-            $head_office->president = $request->president;
-            $head_office->initial = $request->initial;
-            $head_office->industry = $request->industry;
-            $head_office->business_items = $request->business_items;
-            $head_office->customer_name = $request->customer_name;
-            $head_office->fedex = $request->fedex;
-            $head_office->sns = $request->sns;
-            $head_office->website = $request->website;
-            $head_office->user_id = $user_id;
-            $head_office->save();
-        }
+        $head_office->company_name = $request->importer_name;
+        $head_office->address_line1 = $request->bill_company_address_line1;
+        $head_office->address_line2 = $request->bill_company_address_line2;
+        $head_office->city = $request->bill_company_city;
+        $head_office->state = $request->bill_company_state;
+        $head_office->country = $request->bill_company_country;
+        $head_office->zip = $request->bill_company_zip;
+        $head_office->phone = $request->bill_company_phone;
+        $head_office->president = $request->president;
+        $head_office->initial = $request->initial;
+        $head_office->industry = $request->industry;
+        $head_office->business_items = $request->business_items;
+        $head_office->customer_name = $request->customer_name;
+        $head_office->fedex = $request->fedex;
+        $head_office->sns = $request->sns;
+        $head_office->website = $request->website;
+        $head_office->user_id = $user_id;
+        $head_office->save();
 
         //送信formから
         $quotation_no = $request->get('quotation_no');
@@ -651,10 +643,10 @@ class UserinformationController extends Controller
 
         //国
         $country_code = $user_information->country_codes;
-
-        $user_no = User::where('id', '=', $user_id)->first();
+        
+        $un = User::where('id', '=', $user_id)->first();
         //国２文字
-        $ct = strtoupper(substr($user_no->country, 0, 2));
+        $ct = strtoupper(substr($un->country, 0, 2));
         //会社名２文字
         $user_information = Userinformation::where('user_id', '=', $user_id)->first();
 
@@ -682,14 +674,10 @@ class UserinformationController extends Controller
 
         $shortYear = date('y');
         //$invoice_no =  $ct . $cp . date('md') . '_' . str_pad($no, 2, 0, STR_PAD_LEFT);
-        $invoice_no =  $ct . $cp . date('ymd') . '_' . str_pad($no, 2, 0, STR_PAD_LEFT);
+        $invoice_no =  $ct . $cp .date('ymd') . '_' . str_pad($no, 2, 0, STR_PAD_LEFT);
 
         $output = $invoice_no . '.pdf';
         $print_no = $invoice_no;
-
-
-
-
         ///////////////////////////////
 
 
@@ -699,7 +687,7 @@ class UserinformationController extends Controller
         $day = date("F j Y");
 
         //Quotationから見積り内容の行を取ってくる※
-        $quotations = Quotation::where('quotation_no', $quotation_no)->get();
+        $quotations = \App\Model\Quotation::where('quotation_no', $quotation_no)->get();
 
         //Quotationsにフォームから来たfinal_destinationを上書き保存（これでQuotationsの入力は完了）
         //初めての人は前のコントローラーで保存しているのでフォームからはこない（$final_destinationがnullの場合もある）
@@ -778,20 +766,14 @@ class UserinformationController extends Controller
         ];
 
 
-
-        //すでにquotation_noが存在しているものは追加しない(前のページに戻ってきた場合同じものが入ってしまう)
-        $check = Invoice::where('quotation_no', $quotation_no)->first();
-        if ($check->quotation_no == null) {
-            $invoice = new Invoice();
-            $invoice->quotation_no = $quotation_no;
-            $invoice->invoice_no = $invoice_no;
-            $invoice->customers_id = $user_id;
-            $invoice->date_of_issue = date('Y/m/d H:i:s');
-            $invoice->day = $day;
-            $invoice->save();
-        }
-
-
+        //インボイステーブルにデータを登録
+        $invoice = new \App\Model\Invoice();
+        $invoice->quotation_no = $quotation_no;
+        $invoice->invoice_no = $invoice_no;
+        $invoice->customers_id = $user_id;
+        $invoice->date_of_issue = date('Y/m/d H:i:s');
+        $invoice->day = $day;
+        $invoice->save();
 
         //見積もり有効期限
         $expiry_days = Expirie::find(1)->number_of_days;

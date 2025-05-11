@@ -226,6 +226,7 @@
                     Yoshiumi Hamada. President
                 </div>
                 <input type="hidden" name="quotation_no" value="{{ $main['quotation_no'] }}">
+                <input type="hidden" name="pic_id" value="{{ 'pic_id' }}">
                 <input type="hidden" name="id" value="{{ $main['uuid'] }}">
         </form>
     </div>

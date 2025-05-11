@@ -93,16 +93,12 @@ class AccountController extends Controller
 
     public function edit()
     {
-
         $id = Auth::id();
         $user = User::with('Userinformations')->where('id', $id)->first();
-        //$con = Consignee::where('user_id', $id)->first();
-        //$pic = Pic::where('pic_id', $id)->first();
-        
+
         $pic = Pic::where('user_id', $id)->where('default_destination', 1)->first();
         $con = Consignee::where('user_id', $id)->where('default_destination', 1)->first();
 
-        
 
 
         return view('account/edit', compact('user', 'con', 'pic'));
@@ -145,6 +141,7 @@ class AccountController extends Controller
 
     public function update(Request $request)
     {
+
         $request->validate([
             'consignee_name' => 'required',
             'name' => 'required',
@@ -163,9 +160,6 @@ class AccountController extends Controller
         $user_id = $user->id;
 
         $consignee = Consignee::where('user_id', $user_id)->where('default_destination', '1')->first();
-
-        //dd($user_id); 
-
         if (!$consignee) {
             $consignee = new Consignee();
             $consignee->user_id = $user_id;
@@ -195,6 +189,24 @@ class AccountController extends Controller
         $pic->company_name = $request->input('company_name');
         $pic->country = $request->input('person_in_charge_country');
         $pic->save();
+
+        /*一番最初にマイページに登録や編集を行ってしまうと、user_informationテーブルには登録されない。そうすると見積もりが作成できない*/
+        $user_information = Userinformation::where('user_id', $user_id)->first();
+        if( $user_information == null ){
+            Userinformation::create([
+                'user_id' => $user_id,
+                'consignee' => $request->input('consignee_name'),
+                'address_line1' => $request->input('address_line1'),
+                'address_line2' => $request->input('address_line2'),
+                'city' => $request->input('city'),
+                'state' => $request->input('state'),
+                'country_codes' => $request->input('country'),
+                'zip' => $request->input('zip'),
+                'phone' => $request->input('phone'),
+                'person' => $request->input('name'),
+            ]);
+        }
+
 
 
         return redirect(route('account.consignee'))->with('flash_message', 'Has been updated');

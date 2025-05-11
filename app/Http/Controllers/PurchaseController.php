@@ -27,6 +27,7 @@ class PurchaseController extends Controller
         $quotation_no = $request->get('quotation_no');
         //Quotationから見積り内容をget
         $quotations = Quotation::where('quotation_no', $quotation_no)->get();
+        
 
         //Preferenceから
         $preference_data = Preference::first();
@@ -41,6 +42,7 @@ class PurchaseController extends Controller
 
         $user_id = Auth::id();
         $Userinformations = User::find($user_id)->Userinformations;
+        /*
         $consignee = $Userinformations->consignee;
         $address_line1 = $Userinformations->address_line1;
         $address_line2 = $Userinformations->address_line2;
@@ -49,6 +51,16 @@ class PurchaseController extends Controller
         $zip = $Userinformations->zip;
         $phone = $Userinformations->phone;
         $fax = $Userinformations->fax;
+        */
+        $consignee = $quotations[0]->consignee;
+        $address_line1 = $quotations[0]->consignees_address_line1;
+        $address_line2 = $quotations[0]->consignees_address_line2;
+        $city = $quotations[0]->consignees_city;
+        $state = $quotations[0]->consignees_state;
+        $zip = $quotations[0]->consignees_postal_code;
+        $phone = $quotations[0]->consignees_phone;
+        $fax = $Userinformations->fax;
+
 
         $User = User::find($user_id);
         $country = $User->country;

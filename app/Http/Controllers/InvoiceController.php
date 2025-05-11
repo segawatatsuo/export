@@ -25,6 +25,8 @@ use App\Mail\InvoiceMail;
 use Mail;
 use App\Model\Emailtext;
 
+use App\Model\Consignee;
+
 class InvoiceController extends Controller
 {
     public function invoice(Request $request)
@@ -334,6 +336,8 @@ class InvoiceController extends Controller
         //Quotationから見積り内容をget
         $quotations = Quotation::where('quotation_no', $quotation_no)->get();
 
+
+
         //Preferenceから
         $preference_data = Preference::first();
 
@@ -351,14 +355,26 @@ class InvoiceController extends Controller
 
         $user_id = Auth::id();
         $Userinformations = User::find($user_id)->Userinformations;
-        $consignee = $Userinformations->consignee;
-        $address_line1 = $Userinformations->address_line1;
-        $address_line2 = $Userinformations->address_line2;
-        $city = $Userinformations->city;
-        $state = $Userinformations->state;
-        $zip = $Userinformations->zip;
-        $phone = $Userinformations->phone;
-        $fax = $Userinformations->fax;
+
+        //コンサイニーが複数ある可能性があるので現在選択されているコンサイニーを探す
+        $selected_consignee = Consignee::where('user_id', $user_id)->where('default_destination', '1')->first();
+        $pic_id = $selected_consignee->pic_id;
+        //pic_idのpicに関連するクォーテーションを取得
+        $person_in_charge = Quotation::where('pic_id', $pic_id)->first();
+        $pic_id = $person_in_charge->pic_id;
+
+
+
+        $consignees = Consignee::where('pic_id', $pic_id)->first();
+
+        $consignee = $consignees->consignee;
+        $address_line1 = $consignees->address_line1;
+        $address_line2 = $consignees->address_line2;
+        $city = $consignees->city;
+        $state = $consignees->state;
+        $zip = $consignees->zip;
+        $phone = $consignees->phone;
+        $fax = $consignees->fax;
 
         $User = User::find($user_id);
         $country = $User->country;
@@ -465,27 +481,53 @@ class InvoiceController extends Controller
         $expiry = $qt[0]['expiry_days2'];
         //pdf作成日
         $day = Carbon::createFromFormat('Y-m-d H:i:s', $quotations[0]->created_at)->format('Y-m-d');
+        
+        
         $user_id = Auth::id();
         $Userinformations = Userinformation::where('user_id', $user_id)->get();
+        /*
+        $consignee = $Userinformations[0]['consignee'];
         $address_line1 = $Userinformations[0]['address_line1'];
         $address_line2 = $Userinformations[0]['address_line2'];
         $city = $Userinformations[0]['city'];
         $state = $Userinformations[0]['state'];
         $phone = $Userinformations[0]['phone'];
         $fax = $Userinformations[0]['fax'];
+        */
+        //コンサイニーが複数ある可能性があるので現在選択されているコンサイニーを探す
+        $selected_consignee = Consignee::where('user_id', $user_id)->where('default_destination', '1')->first();
+        $pic_id = $selected_consignee->pic_id;
+        //pic_idのpicに関連するクォーテーションを取得
+        $person_in_charge = Quotation::where('pic_id', $pic_id)->first();
+        $pic_id = $person_in_charge->pic_id;
+
+
+
+        $consignees = Consignee::where('pic_id', $pic_id)->first();
+
+        $consignee = $consignees->consignee;
+        $address_line1 = $consignees->address_line1;
+        $address_line2 = $consignees->address_line2;
+        $city = $consignees->city;
+        $state = $consignees->state;
+        $zip = $consignees->zip;
+        $phone = $consignees->phone;
+        $fax = $consignees->fax;
+
+
+
+
 
         $us = User::where('id', $user_id)->get();
         $country = $us[0]['country'];
+        
+        
+        
         $invoice_no = $quotations[0]['invoice_no'];
-
         $ctn_total = $qt[0]['ctn_total'];
-
         $quantity_total = $qt[0]['quantity_total'];
         $amount_total = $qt[0]['amount_total'];
-
-        $consignee = $Userinformations[0]['consignee'];
         $preference_data = "";
-
         $total = ['quantity_total' => $quantity_total, 'ctn_total' => $ctn_total, 'amount_total' => $amount_total, 'ctn_total' => $ctn_total];
 
         $main = [

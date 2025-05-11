@@ -22,6 +22,7 @@ use App\Model\Expirie;
 use App\Model\Etd;
 
 use App\Mail\QuotationMail;
+use App\Model\Consignee;
 use Mail;
 use App\Model\Emailtext;
 use App\Model\Order;
@@ -30,6 +31,12 @@ class QuotationController extends Controller
 {
     public function quotation(Request $request)
     {
+        //最初に確認。コンサイニーに住所登録があるか？なければ入力を促す画面へ移動させる。505行目からから移動
+        $consignee = Consignee::where('user_id', Auth::id())->first();
+        if ($consignee->consignee == null or $consignee->address_line1 == null) {
+            return view('entryform', compact('uuid', 'user_id', 'quotation_no'));
+        }
+
         if (session('article') == "") {
             session()->put(['article' => 'Air Stocking']);
         }
@@ -398,8 +405,15 @@ class QuotationController extends Controller
         session()->put('expiry_days', $expiry_days2); //15days
         session()->put('expiryaddday', $expiryaddday); //Apr 26 2021
 
+
+
+
+
+
+
+
         //quotations(見積もり)テーブルにデータを作成する
-        $db = new Quotation();
+        $quotation = new Quotation();
 
         //見積書番号作成
         $serial_number = new Quitation_serial_number();
@@ -412,7 +426,7 @@ class QuotationController extends Controller
         }
 
         $quotation_no = 'quitation_' . $qt_number;
-        $db->quotation_no = $quotation_no;
+        $quotation->quotation_no = $quotation_no;
 
         $serial_number->pdf_file_name = $quotation_no . '.pdf';
         $serial_number->user_id = $user_id;
@@ -420,52 +434,75 @@ class QuotationController extends Controller
 
         $shipper = $preference_data->shipper;
 
-        $db->date_of_issue = Carbon::now();
-        $db->shipper = $shipper;
-        $db->consignee_no = $user_id;
-        //SELECT * FROM `userinformations` WHERE `user_id` = 16
+        $quotation->date_of_issue = Carbon::now();
+        $quotation->shipper = $shipper;
+        $quotation->consignee_no = $user_id;
+
+        //コンサイニーが複数ある可能性があるので現在選択されているコンサイニーを探す
+        $selected_consignee = Consignee::where('user_id', $user_id)->where('default_destination', '1')->first();
+        $pic_id = $selected_consignee->pic_id;
+
+        $quotation->consignees_name = $selected_consignee->consignee;
+        $quotation->consignees_address_line1 = $selected_consignee->address_line1;
+        $quotation->consignees_address_line2 = $selected_consignee->address_line2;
+        $quotation->consignees_city = $selected_consignee->city;
+        $quotation->consignees_state = $selected_consignee->state;
+        $quotation->consignees_country_codes = $selected_consignee->country_codes;
+        $quotation->consignees_postal_code = $selected_consignee->post_code;
+        $quotation->consignees_phone = $selected_consignee->phone;
+        /*
         $Userinformations = User::find($user_id)->Userinformations;
         if ($Userinformations) {
             $consignee = $Userinformations->consignee;
-            $db->consignee = $consignee;
+            $quotation->consignee = $consignee;
+        }
+        */
+
+        if ($selected_consignee) {
+            $consignee = $selected_consignee->consignee;
+            $quotation->consignee = $consignee;
         }
 
 
-        $db->port_of_loading = $preference_data->port_of_loading;
-        $db->sailing_on = $sailing_on;
-        $db->expiry = $expiry_days;
-        $db->expiryaddday = $expiryaddday;
-        $db->shipping = $expiryaddday;
-        $db->arriving_on = $arriving_on;
-        $db->expiry_days2 = $expiry_days2;
-        $db->type = $type;
+        $quotation->port_of_loading = $preference_data->port_of_loading;
+        $quotation->sailing_on = $sailing_on;
+        $quotation->expiry = $expiry_days;
+        $quotation->expiryaddday = $expiryaddday;
+        $quotation->shipping = $expiryaddday;
+        $quotation->arriving_on = $arriving_on;
+        $quotation->expiry_days2 = $expiry_days2;
+        $quotation->type = $type;
 
-        $db->quantity_total = $quantity_total;
-        $db->ctn_total = $ctn_total;
-        $db->amount_total = $amount_total;
+        $quotation->quantity_total = $quantity_total;
+        $quotation->ctn_total = $ctn_total;
+        $quotation->amount_total = $amount_total;
 
         //session()->put('shipper',$preference_data->shipper);
 
 
         //初回の人はまだこの時点ではconsigneeデータがない
-        if ($db->consignee) {
-            $db->consignee = $consignee;
+        if ($selected_consignee->consignee==null) {
+            $quotation->consignee = $consignee;
         }
-        if ($db->final_destination) {
-            $db->final_destination = $state . ',' . $country;
+        if ($quotation->final_destination) {
+            $quotation->final_destination = $state . ',' . $country;
         }
 
         //配送方法
-        $db->delivery_method = $type;
+        $quotation->delivery_method = $type;
 
 
         //$serial_number
         $kizon = Quotation::where('quotation_no', $serial_number)->get();
         //quotations(見積もり)テーブルに保存
         if ($kizon == "") {
-            //$db->save();
+            //$quotation->save();
         }
-        $db->save();
+
+        $quotation->pic_id = $selected_consignee->pic_id;
+        
+
+        $quotation->save();
 
         foreach ($items as $item) {
             //見積もり明細テーブルに登録
@@ -480,21 +517,32 @@ class QuotationController extends Controller
             $sub->amount = $item[5]; //4800
             $sub->unit = $item[6];
             $sub->quotation_no = $quotation_no;
-            $sub->quotation_id = $db->id;
+            $sub->quotation_id = $quotation->id;
             $sub->save();
 
             // 二重送信防止
             //$request->session()->regenerateToken();
         }
-        //Userinformationsテーブルからマスターのidと同じuser_idを探し住所等を取り出す
-        $Userinformations = User::find($user_id)->Userinformations;
 
-        //Userinformationsがnullの場合（住所登録が住んでいない場合）なら、quotation_noを持たせて住所入力フォームへ移動
+
+
+        /******************************************************************************************* */
+        /*Userinformationsがnullの場合（住所登録が住んでいない場合）なら、quotation_noを持たせて住所入力フォームへ移動
+        /******************************************************************************************* */
+        /*
+        $Userinformations = User::find($user_id)->Userinformations;
         if ($Userinformations == null) {
             return view('entryform', compact('uuid', 'user_id', 'quotation_no'));
         }
+        */
+        /******************************************************************************************* */
+
+
+
+        
 
         //住所登録が済んでいる場合
+        /*
         $consignee = $Userinformations->consignee;
         $address_line1 = $Userinformations->address_line1;
         $address_line2 = $Userinformations->address_line2;
@@ -504,6 +552,18 @@ class QuotationController extends Controller
         $country_codes = $Userinformations->country_codes;
         $phone = $Userinformations->phone;
         $fax = $Userinformations->fax;
+        */
+
+        $consignee = $selected_consignee->consignee;
+        $address_line1 = $selected_consignee->address_line1;
+        $address_line2 = $selected_consignee->address_line2;
+        $city = $selected_consignee->city;
+        $state = $selected_consignee->state;
+        $country = $selected_consignee->country;
+        $country_codes = $selected_consignee->country_codes;
+        $phone = $selected_consignee->phone;
+        $fax = $selected_consignee->fax;
+
 
         $user = array(
             'user_id' => $user_id, 'consignee' => $consignee, 'address_line1' => $address_line1,
@@ -548,18 +608,27 @@ class QuotationController extends Controller
         //見積もりメール
         Mail::to($to)->bcc($bcc)->send(new QuotationMail($content, $subject, $items));
 
-        return view('quotation', compact('uuid', 'preference_data', 'items', 'ctn_total', 'quantity_total', 'amount_total', 'sailing_on', 'user', 'quotation_no', 'type', 'expiry_days2', 'shipper', 'consignee', 'port_of_loading', 'arriving_on'));
+        return view('quotation', compact('uuid', 'preference_data', 'items', 'ctn_total', 'quantity_total', 'amount_total', 'sailing_on', 'user', 'quotation_no', 'type', 'expiry_days2', 'shipper', 'consignee', 'port_of_loading', 'arriving_on','pic_id'));
     }
 
     //マイページから再度表示へ
     public function quotation_repeat(Request $request)
     {
+
+
+
         $quotation_no = $request->quotation_no;
         $data = Quotation::where('quotation_no', $quotation_no)->first();
         $preference_data = Preference::first();
         $shipper    = $data->shipper;
         $consignee_no = $data->consignee_no; //$user_idのこと
-        $consignee = $data->consignee;
+        
+
+        //コンサイニーが複数ある可能性があるので現在選択されているコンサイニーを探す
+        $selected_consignee = Consignee::where('user_id', $data->consignee_no)->where('default_destination', '1')->first();
+        $consignee = $selected_consignee->consignee;
+        $pic_id = $selected_consignee->pic_id;
+
         $port_of_loading = $data->port_of_loading;
         $final_destination = $data->final_destination; //null
         $sailing_on = $data->sailing_on;
@@ -592,7 +661,7 @@ class QuotationController extends Controller
         $user = "";
         
 
-        return view('quotation', compact('uuid', 'preference_data', 'items', 'ctn_total', 'quantity_total', 'amount_total', 'sailing_on', 'user', 'quotation_no', 'type', 'expiry_days2', 'shipper', 'consignee', 'port_of_loading', 'arriving_on'));
+        return view('quotation', compact('uuid', 'preference_data', 'items', 'ctn_total', 'quantity_total', 'amount_total', 'sailing_on', 'user', 'quotation_no', 'type', 'expiry_days2', 'shipper', 'consignee', 'port_of_loading', 'arriving_on','pic_id'));
     }
 
     //見積書PDFの出力(FORMからhidenでuuidを受け取る)

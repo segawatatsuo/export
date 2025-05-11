@@ -231,6 +231,7 @@ class OrderController extends Controller
     //注文書のアップロードフォーム画面
     public function order_confirm(Request $request)
     {
+
         $user_id = Auth::id();
         $main = [];
         $type = $request->type;
@@ -242,22 +243,32 @@ class OrderController extends Controller
         $final_destination = $request->get('final_destination');
         //Preferenceから
         $preference_data = Preference::first();
+
         //Quotationから見積り内容の行を取ってくる※
-        $quotations = \App\Model\Quotation::where('quotation_no', $quotation_no)->get();
+        $quotations = Quotation::where('quotation_no', $quotation_no)->get();
         //複数行ある可能性があるので配列の1行目[0]から
         $shipper = $quotations[0]->shipper;
+
+
         $consignee_no = $quotations[0]->consignee_no;
-        $consignee = Userinformation::where('user_id', $consignee_no)->first()->consignee;
+       //consignee = Userinformation::where('user_id', $consignee_no)->first()->consignee;
+        $consignee = $quotations[0]->consignee;//これが正しい
+        //dd($quotations[0]->consignees_address_line1);//これが正しい
+
+
         $port_of_loading = $quotations[0]->port_of_loading;
         $final_destination = $quotations[0]->final_destination;
         $sailing_on = $quotations[0]->sailing_on;
         $arriving_on = $quotations[0]->arriving_on;
         $expiry = $quotations[0]->expiry;
         $delivery_method = $quotations[0]->delivery_method;
+
         $iv = Invoice::where('quotation_no', $quotation_no)->first();
         $invoice_no = $iv->invoice_no;
+        
         $uuid = $quotation_no;
         $day = $iv->day;
+
         //上記項目を配列$mainにまとめる
         $main = [
             'invoice_no' => $invoice_no,
@@ -265,7 +276,8 @@ class OrderController extends Controller
             'quotation_no' => $quotation_no,
             'preference_data' => $preference_data,
             'shipper' => $shipper,
-            'consignee' => $consignee,
+            //consignee' => $consignee,
+            'consignee' => $quotations[0]->consignee,
             'port_of_loading' => $port_of_loading,
             'final_destination' => $final_destination,
             'sailing_on' => $sailing_on,
@@ -317,14 +329,21 @@ class OrderController extends Controller
         $user = [
             'user_id' => $user_id,
             'consignee' => $consignee,
-            'address_line1' => $ui->address_line1,
-            'address_line2' => $ui->address_line2,
-            'city' => $ui->city,
-            'state' => $ui->state,
-            'country' => User::where('id', $user_id)->first()->country,
-            'country_codes' => $ui->country_codes,
-            'zip' => $ui->zip,
-            'phone' => $ui->phone,
+            //'address_line1' => $ui->address_line1,
+            //'address_line2' => $ui->address_line2,
+            //'city' => $ui->city,
+            //'state' => $ui->state,
+            //'country' => User::where('id', $user_id)->first()->country,
+            //'zip' => $ui->zip,
+            //'phone' => $ui->phone,
+            'address_line1' => $quotations[0]->consignees_address_line1,
+            'address_line2' => $quotations[0]->consignees_address_line2,
+            'city' => $quotations[0]->consignees_city,
+            'state' => $quotations[0]->consignees_state,
+            'country' => $quotations[0]->consignees_state,
+            'country_codes' => $quotations[0]->consignees_country_codes	,
+            'zip' => $quotations[0]->consignees_postal_code,
+            'phone' => $quotations[0]->consignees_phone,
             'fax' => $ui->fax
         ];
 
@@ -354,16 +373,26 @@ class OrderController extends Controller
         $order->quantity_total = $quantity_total;
         $order->ctn_total = $ctn_total;
 
-        //$order->shipping_method=$shipping_method;
+
         $order->consignee = $consignee;
-        $order->country = User::where('id', $user_id)->first()->country;
-        $order->address_line1 = $ui->address_line1;
-        $order->address_line2 = $ui->address_line2;
-        $order->city = $ui->city;
-        $order->state = $ui->state;
-        $order->zip = $ui->zip;
-        $order->phone = $ui->phone;
+        //$order->country = User::where('id', $user_id)->first()->country;
+        //$order->address_line1 = $ui->address_line1;
+        //$order->address_line2 = $ui->address_line2;
+        //$order->city = $ui->city;
+        //$order->state = $ui->state;
+        //$order->zip = $ui->zip;
+        //$order->phone = $ui->phone;
+        //$order->fax = $ui->fax;
+
+        $order->country = $quotations[0]->consignees_country_codes;
+        $order->address_line1 = $quotations[0]->consignees_address_line1;
+        $order->address_line2 = $quotations[0]->consignees_address_line2;
+        $order->city = $quotations[0]->consignees_city;
+        $order->state = $quotations[0]->consignees_state;
+        $order->zip = $quotations[0]->consignees_postal_code;
+        $order->phone = $quotations[0]->consignees_phone;
         $order->fax = $ui->fax;
+
         $order->bill_company_address_line1 = $ui->bill_company_address_line1;
         $order->bill_company_address_line2 = $ui->bill_company_address_line2;
         $order->bill_company_city = $ui->bill_company_city;
@@ -608,8 +637,13 @@ class OrderController extends Controller
 
         //コンサイニー
         $pdf->Text(77, 10, htmlspecialchars($consignee));
-        $pdf->Text(77, 14, htmlspecialchars($ui->address_line1 . ',' . $ui->address_line2 . ',' . $ui->city . ',' . $ui->state . ',' . $ui->country_codes));
-        $pdf->Text(77, 18, htmlspecialchars('tel: ' . $ui->phone . ' fax: ' . $ui->fax));
+        //$pdf->Text(77, 14, htmlspecialchars($ui->address_line1 . ',' . $ui->address_line2 . ',' . $ui->city . ',' . $ui->state . ',' . $ui->country_codes));
+        //$pdf->Text(77, 18, htmlspecialchars('tel: ' . $ui->phone . ' fax: ' . $ui->fax));
+
+        $pdf->Text(77, 14, htmlspecialchars($quotations[0]->consignees_address_line1 . ',' . $quotations[0]->consignees_address_line2 . ',' . $quotations[0]->consignees_city . ',' . $quotations[0]->consignees_state . ',' . $quotations[0]->consignees_country_codes));
+        $pdf->Text(77, 18, htmlspecialchars('tel: ' . $quotations[0]->consignees_phone . ' fax: ' . $ui->fax));
+
+
         //日付
         $pdf->Text(150, 18, htmlspecialchars($invoice_no));
         //インボイスNo
