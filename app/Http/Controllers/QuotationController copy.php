@@ -30,7 +30,8 @@ class QuotationController extends Controller
 {
     public function quotation(Request $request)
     {
-        //dd("quotation");
+        
+        dd("");
 
         if (session('article') == "") {
             session()->put(['article' => 'Air Stocking']);
@@ -260,6 +261,8 @@ class QuotationController extends Controller
 
         if ($type == "air") {
 
+            
+
             /*
             foreach ($GOODS as $key => $val) {
                 //空欄は無視して最低数より少ない場合（1アイテムは最低20）
@@ -304,6 +307,7 @@ class QuotationController extends Controller
             if (!empty($err)) {
                 return redirect()->route($route_name)->with('flash_message', implode('<br>', $err))->withInput();
             }
+
 
             //air用の単価表
             foreach ($group_total as $key => $val) {

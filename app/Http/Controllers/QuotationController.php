@@ -31,6 +31,8 @@ class QuotationController extends Controller
 {
     public function quotation(Request $request)
     {
+
+
         //最初に確認。コンサイニーに住所登録があるか？なければ入力を促す画面へ移動させる。505行目からから移動
         $consignee = Consignee::where('user_id', Auth::id())->first();
         if ($consignee->consignee == null or $consignee->address_line1 == null) {
@@ -261,6 +263,7 @@ class QuotationController extends Controller
 
         //単価を出す関数
         //$type(fedex,air,ship) group_total(PREMIUM-SILK=>200,PREMIUM-SILK QT=>0,DIAMOND LEGS=>300,DIAMOND LEGS DQ) $total(groupの各合計)
+        /*
         function which_tanka2($type, $group, $total, $fedex_low, $fedex_up, $air1_low, $air1_up, $air2_low, $air2_up, $ship_low, $ship_up, $array_sum)
         {
             if ($type == "fedex" and $total >= 1 and $total <= $fedex_up) {
@@ -280,6 +283,48 @@ class QuotationController extends Controller
                 return $tanka;
             }
         }
+        */
+
+
+function which_tanka2($type, $group, $total, $fedex_low, $fedex_up, $air1_low, $air1_up, $air2_low, $air2_up, $ship_low, $ship_up, $array_sum)
+{
+    $tanka = null;
+    
+    if ($type == "fedex" && $total >= $fedex_low && $total <= $fedex_up) {
+        $tanka = Product::where('group', '=', $group)->first()->price_fedex ?? null;
+        
+    } elseif ($type == "air") {
+        $product = Product::where('group', '=', $group)->first();
+        
+        if ($total >= $air2_low && $total <= $air2_up) {
+            // 200-499個の場合
+            $tanka = $product->price_air_2 ?? null;
+        } elseif ($total >= $air1_low && $total <= $air1_up) {
+            // 100-199個の場合
+            $tanka = $product->price_air_1 ?? null;
+        } elseif ($total >= 1 && $total < $air1_low) {
+            // 1-99個の場合もprice_air_1を適用
+            $tanka = $product->price_air_1 ?? null;
+        }
+        
+    } elseif ($type == "ship" && $total >= $ship_low && $total <= $ship_up) {
+        $tanka = Product::whereGroup($group)->first()->price_ship ?? null;
+        
+    } elseif ($type == "ship" && $array_sum >= $ship_low && $array_sum <= $ship_up) {
+        $tanka = Product::whereGroup($group)->first()->price_ship ?? null;
+    }
+    
+    if ($tanka === null || $tanka === 0) {
+        \Log::warning("which_tanka2: 値が取得できませんでした", [
+            'type' => $type,
+            'group' => $group,
+            'total' => $total,
+            'tanka' => $tanka,
+        ]);
+    }
+    
+    return $tanka;
+}
 
 
 
