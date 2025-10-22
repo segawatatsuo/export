@@ -34,7 +34,7 @@
                         <!--
                         <object data="{{ asset('storage/order') . '/' . $file_name }}" width="900" height="900"></object>
                         -->
-                        <object data="{{ Storage::url('order/' . $file_name) }}" width="900" height="900"></object>
+                        <object data="{{ url('storage/app/public/order/' . $file_name) }}" width="900" height="900"></object>
 
                     </div>
                 </div>
