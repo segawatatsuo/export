@@ -814,9 +814,19 @@ class OrderController extends Controller
             
             else {
                 //お名前用
+                /*
                 $from = '/home/r2325683/export/public/storage/order/' . $file_name;
                 $to = '/home/r2325683/ccmapp/public/storage/order/' . $file_name;
                 copy($from, $to);
+                */
+                $from = storage_path('app/public/order/' . $file_name);
+                $to   = '/home/r2325683/ccmapp/public/storage/order/' . $file_name;
+
+                if (file_exists($from)) {
+                    copy($from, $to);
+                } else {
+                    Log::error("ファイルが存在しません: {$from}");
+                }
             }
 
 
@@ -1278,9 +1288,23 @@ class OrderController extends Controller
                 copy($from, $to);
             } else {
                 //お名前用
+                /*
                 $from = '/home/r2325683/fedex/public/storage/order/' . $file_name;
                 $to = '/home/r2325683/ccmapp/public/storage/order/' . $file_name;
                 copy($from, $to);
+                */
+
+$from = storage_path('app/public/order/' . $file_name);
+$to   = '/home/r2325683/ccmapp/public/storage/order/' . $file_name;
+
+if (file_exists($from)) {
+    copy($from, $to);
+} else {
+    Log::error("ファイルが存在しません: {$from}");
+}
+
+
+
             }
 
             return view('payment_upload', compact('order_number', 'payment_method', 'file_name', 'invoice_no', 'directory_path'));

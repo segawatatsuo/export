@@ -263,7 +263,7 @@ class QuotationController extends Controller
 
         //単価を出す関数
         //$type(fedex,air,ship) group_total(PREMIUM-SILK=>200,PREMIUM-SILK QT=>0,DIAMOND LEGS=>300,DIAMOND LEGS DQ) $total(groupの各合計)
-        /*
+/*
         function which_tanka2($type, $group, $total, $fedex_low, $fedex_up, $air1_low, $air1_up, $air2_low, $air2_up, $ship_low, $ship_up, $array_sum)
         {
             if ($type == "fedex" and $total >= 1 and $total <= $fedex_up) {
@@ -283,7 +283,7 @@ class QuotationController extends Controller
                 return $tanka;
             }
         }
-        */
+*/
 
 
 function which_tanka2($type, $group, $total, $fedex_low, $fedex_up, $air1_low, $air1_up, $air2_low, $air2_up, $ship_low, $ship_up, $array_sum)

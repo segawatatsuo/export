@@ -106,6 +106,7 @@
                             -->
 
                             <!--バリデーション  validate[funcCall[hogehoge]] -->
+                            <!--
                             <input type="text" id="{{ $item['product_code'] }}" class="txtCal red-tip"
                                 name="{{ $item['product_code'] }}"
                                 value="{{ old($item['product_code']) }}" placeholder="Enter the number" data-toggle="tooltip" 
@@ -116,7 +117,12 @@
                                 @elseif($item['stock'] > $Minimum_orders)
                                 title="1ケースから" 
                                 @endif >
+                            -->
 
+                            <input type="text" id="{{ $item['product_code'] }}" class="txtCal red-tip"
+                                name="{{ $item['product_code'] }}"
+                                value="{{ old($item['product_code']) }}" placeholder="Enter the number" data-toggle="tooltip" 
+                                title="{{ $Minimum_orders }} ケース以上" >
 
 
 
