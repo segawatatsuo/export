@@ -31,7 +31,10 @@
                 <div class="card">
                     <div class="card-header"></div>
                     <div class="card-body">
+                        <!--
                         <object data="{{ asset('storage/order') . '/' . $file_name }}" width="900" height="900"></object>
+                        -->
+                        <object data="{{ url('storage/app/public/order/' . $file_name) }}" width="900" height="900"></object>
                     </div>
                 </div>
                 <br>
