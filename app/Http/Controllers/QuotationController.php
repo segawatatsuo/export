@@ -34,10 +34,19 @@ class QuotationController extends Controller
 
 
         //最初に確認。コンサイニーに住所登録があるか？なければ入力を促す画面へ移動させる。505行目からから移動
+        /*
         $consignee = Consignee::where('user_id', Auth::id())->first();
         if ($consignee->consignee == null or $consignee->address_line1 == null) {
             return view('entryform', compact('uuid', 'user_id', 'quotation_no'));
         }
+        */
+
+$consignee = Consignee::where('user_id', Auth::id())->first();
+
+if (empty($consignee) || empty($consignee->consignee) || empty($consignee->address_line1)) {
+    return view('entryform', compact('uuid', 'user_id', 'quotation_no'));
+}
+
 
         if (session('article') == "") {
             session()->put(['article' => 'Air Stocking']);
