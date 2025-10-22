@@ -317,6 +317,7 @@ class AccountController extends Controller
             $pic->default_destination = "1";
         }
         $pic->save();
+        session(['pic_id' => $pic->pic_id]);
 
         return redirect()->route('account.index');
     }
@@ -357,6 +358,7 @@ class AccountController extends Controller
 
         //$pic_id = $con->pic_id;
         $pic_id = $con->id;
+session(['pic_id' => $pic_id]);
 
         // 同じ担当者のConsigneeを default に
         $consignee = Consignee::where('id', $pic_id)->first();
@@ -374,6 +376,8 @@ class AccountController extends Controller
             $pc->default_destination = "1";
             $pc->save();
         }
+
+        
 
         return redirect()->route('account.index');
     }

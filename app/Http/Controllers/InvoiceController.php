@@ -337,7 +337,6 @@ class InvoiceController extends Controller
         $quotations = Quotation::where('quotation_no', $quotation_no)->get();
 
 
-
         //Preferenceから
         $preference_data = Preference::first();
 
@@ -359,11 +358,13 @@ class InvoiceController extends Controller
         //コンサイニーが複数ある可能性があるので現在選択されているコンサイニーを探す
         $selected_consignee = Consignee::where('user_id', $user_id)->where('default_destination', '1')->first();
         $pic_id = $selected_consignee->pic_id;
+        
         //pic_idのpicに関連するクォーテーションを取得
         $person_in_charge = Quotation::where('pic_id', $pic_id)->first();
-        $pic_id = $person_in_charge->pic_id;
 
+        //$pic_id = $person_in_charge->pic_id;
 
+$pic_id = session()->get('pic_id');
 
         $consignees = Consignee::where('pic_id', $pic_id)->first();
 
@@ -444,6 +445,7 @@ class InvoiceController extends Controller
         $image_data2 = base64_encode(file_get_contents($image_path));
 
 
+        
         $pdf = \PDF::loadView('invoice_print', compact('image_data', 'main', 'items', 'total', 'image_data2', 'type'))->setPaper('a4')->setWarnings(false);
 
         $output = $invoice_no . '.pdf';
