@@ -371,8 +371,9 @@ class InvoiceController extends Controller
         $person_in_charge = Quotation::where('pic_id', $pic_id)->first();
 
         //$pic_id = $person_in_charge->pic_id;
-
+if(session()->exists('pic_id')){
 $pic_id = session()->get('pic_id');
+}
 
         $consignees = Consignee::where('pic_id', $pic_id)->first();
 
