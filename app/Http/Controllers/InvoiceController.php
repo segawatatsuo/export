@@ -219,8 +219,13 @@ class InvoiceController extends Controller
             'amount_total' => $amount_total,
         ];
 
-        //インボイスメール
-        Mail::to($to)->bcc($bcc)->send(new InvoiceMail($content, $subject, $items));
+        //管理者かどうか
+        if(session('impersonating') != null) {
+            
+        }else{
+            //インボイスメール
+            Mail::to($to)->bcc($bcc)->send(new InvoiceMail($content, $subject, $items));
+        }
 
         return view('invoice', compact('main', 'items', 'total', 'user'));
     }
@@ -267,6 +272,9 @@ class InvoiceController extends Controller
             'fax' => $ui->fax
         ];
 
+
+        $selected_consignee = Consignee::where('user_id', Auth::id())->where('default_destination', '1')->first();
+        $pic_id=$selected_consignee->pic_id;
         /*
         //商品を配列$itemsにまとめる
         $data = [];
@@ -500,9 +508,10 @@ $pic_id = session()->get('pic_id');
         $selected_consignee = Consignee::where('user_id', $user_id)->where('default_destination', '1')->first();
         $pic_id = $selected_consignee->pic_id;
         //pic_idのpicに関連するクォーテーションを取得
-        $person_in_charge = Quotation::where('pic_id', $pic_id)->first();
-        $pic_id = $person_in_charge->pic_id;
-
+        //$person_in_charge = Quotation::where('pic_id', $pic_id)->first();
+        //$pic_id = $person_in_charge->pic_id;
+        $selected_consignee = Consignee::where('user_id', Auth::id())->where('default_destination', '1')->first();
+        $pic_id=$selected_consignee->pic_id;
 
 
         $consignees = Consignee::where('pic_id', $pic_id)->first();

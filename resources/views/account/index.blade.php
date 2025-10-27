@@ -7,27 +7,27 @@
 
         <div class="container mt-1 mb-1">
             <div class="row">
-            <div class="col-4">
-                <span class="font-weight-bold">Consignee(Warehouse): {{ $consignee_name }}</span><br>
-                {{ $consignee_address_line1 ?? '' }},
-                {{ $consignee_address_line2 ?? '' }},
-                {{ $consignee_city ?? '' }},
-                {{ $consignee_state  ?? ''}}
-                {{ $consignee_country  ?? ''}}<br>
-                phone:{{ $consignee->phone  ?? ''}}
-                <a href="{{ route('account.consignee') }}">modification</a>
+                <div class="col-4">
+                    <span class="font-weight-bold">Consignee(Warehouse): {{ $consignee_name }}</span><br>
+                    {{ $consignee_address_line1 ?? '' }},
+                    {{ $consignee_address_line2 ?? '' }},
+                    {{ $consignee_city ?? '' }},
+                    {{ $consignee_state ?? '' }}
+                    {{ $consignee_country ?? '' }}<br>
+                    phone:{{ $consignee->phone ?? '' }}
+                    <a href="{{ route('account.consignee') }}">modification</a>
+                </div>
+                <div class="col-4">
+                    <span class="font-weight-bold">Importer (Head Office): {{ $consignee->importer_name ?? '' }}</span><br>
+                    {{ $consignee->bill_company_address_line1 ?? '' }},
+                    {{ $consignee->bill_company_address_line2 ?? '' }},
+                    {{ $consignee->bill_company_city ?? '' }},
+                    {{ $consignee->bill_company_state ?? '' }}
+                    {{ $consignee->bill_company_country ?? '' }}<br>
+                    phone:{{ $consignee->bill_company_phone ?? '' }}
+                    <a href="{{ route('account.importer') }}">modification</a>
+                </div>
             </div>
-            <div class="col-4">
-                <span class="font-weight-bold">Importer (Head Office): {{ $consignee->importer_name ?? '' }}</span><br>
-                {{ $consignee->bill_company_address_line1  ?? ''}},
-                {{ $consignee->bill_company_address_line2 ?? '' }},
-                {{ $consignee->bill_company_city ?? '' }},
-                {{ $consignee->bill_company_state ?? '' }}
-                {{ $consignee->bill_company_country ?? '' }}<br>
-                phone:{{ $consignee->bill_company_phone ?? '' }}
-                <a href="{{ route('account.importer') }}">modification</a>
-            </div>
-        </div>
         </div>
 
 
@@ -57,8 +57,17 @@
         </div>
     @endif
 
-    <div class="container mt-4">
+    <!-- 管理者モード -->
+    @if (session('impersonating'))
+        <div style="background:#ffe0e0; color:#900; padding:10px; text-align:center;">
+            ⚠ 管理者モードでログイン中です
+        </div>
+    @endif
 
+
+
+
+    <div class="container mt-4">
         <div>
             <table class="table">
                 @foreach ($data as $hoge)
@@ -79,36 +88,38 @@
 
                         <td style="width: 15%">
                             @if (isset($hoge->invoices->invoice_no))
-                            <a href="{{ route('invoice_repeat', ['invoice_no' => $hoge->invoices->invoice_no]) }}">
-                                {{ $hoge->invoices->invoice_no }}
-                            </a>
+                                <a href="{{ route('invoice_repeat', ['invoice_no' => $hoge->invoices->invoice_no]) }}">
+                                    {{ $hoge->invoices->invoice_no }}
+                                </a>
 
-                            <a href="{{ route('generate_invoice_pdf2',['quotation_no' => $hoge->quotation_no]) }}">
-                                {{ $hoge->invoices->invoice_no }}
-                            </a>
-
+                                <a href="{{ route('generate_invoice_pdf2', ['quotation_no' => $hoge->quotation_no]) }}">
+                                    {{ $hoge->invoices->invoice_no }}
+                                </a>
                             @endif
                         </td>
                         <td style="width: 15%">
                             @if (isset($hoge->invoices->order_confirms->order_no))
-                            <a href="{{ route('order_repeat', ['order_no' => $hoge->invoices->order_confirms->order_no]) }}">
-                                {{ $hoge->invoices->order_confirms->order_no }}
-                            </a>
+                                <a
+                                    href="{{ route('order_repeat', ['order_no' => $hoge->invoices->order_confirms->order_no]) }}">
+                                    {{ $hoge->invoices->order_confirms->order_no }}
+                                </a>
                             @endif
 
                             <br>
 
-                            @if(isset($hoge->invoices->order_confirms->payment_method))
-                            <a href="{{ route('order_confirm', ['quotation_no' => $hoge->invoices->order_confirms->quotation_no,'payment_method' => $hoge->invoices->order_confirms->payment_method]) }}">
-                                order
-                            </a>
+                            @if (isset($hoge->invoices->order_confirms->payment_method))
+                                <a
+                                    href="{{ route('order_confirm', ['quotation_no' => $hoge->invoices->order_confirms->quotation_no, 'payment_method' => $hoge->invoices->order_confirms->payment_method]) }}">
+                                    order
+                                </a>
                             @endif
                             <br>
-                            
+
                             @if (isset($hoge->invoices->order_confirms->order_no))
-                            <a href="{{ route('order_payment', ['order_number' => $hoge->invoices->order_confirms->order_no]) }}">
-                                payment
-                            </a>
+                                <a
+                                    href="{{ route('order_payment', ['order_number' => $hoge->invoices->order_confirms->order_no]) }}">
+                                    payment
+                                </a>
                             @endif
 
                         </td>
@@ -119,29 +130,27 @@
 
                         <td style="width: 15%">
                             @if (isset($hoge->invoices->order_confirms->order_no))
-                            Packinglist
-                            <!--
-                                <a href="{{-- asset('storage/account/packinglist.pdf') --}}">Packinglist</a>
-                            -->
+                                Packinglist
+                                <!--
+                                                                <a href="{{-- asset('storage/account/packinglist.pdf') --}}">Packinglist</a>
+                                                            -->
                             @else
-                            Packinglist
-                            <!--
-                                <a href="{{-- asset('storage/account/packinglist.pdf') --}}">Packinglist</a>
-                            -->
+                                Packinglist
+                                <!--
+                                                                <a href="{{-- asset('storage/account/packinglist.pdf') --}}">Packinglist</a>
+                                                            -->
                             @endif
-                            
+
                             <br>
-                            Air Waybill<br>Bill of Loading<
-                            <!--
-                            <a href="{{-- asset('storage/account/AirWaybill.pdf') --}}">Air Waybill</a><br>
-                            <a href="{{-- asset('storage/account/BillOfLoading.pdf') --}}">Bill of Loading</a>
-                            -->
+                            Air Waybill<br>Bill of Loading< <!-- <a href="{{-- asset('storage/account/AirWaybill.pdf') --}}">Air Waybill</a><br>
+                                <a href="{{-- asset('storage/account/BillOfLoading.pdf') --}}">Bill of Loading</a>
+                                -->
                         </td>
                         <td style="width: 10%">
                             Export Declaration
                             <!--
-                            <a href="{{-- asset('storage/account/Export_Declaration.pdf') --}}">Export Declaration</a>
-                            -->
+                                                            <a href="{{-- asset('storage/account/Export_Declaration.pdf') --}}">Export Declaration</a>
+                                                            -->
                         </td>
 
                     </tr>

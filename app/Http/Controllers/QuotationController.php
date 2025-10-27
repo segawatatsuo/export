@@ -742,10 +742,12 @@ class QuotationController extends Controller
             'amount_total' => $amount_total,
         ];
 
-        //dd($to,$bcc,$subject,$content);
+        if(session('impersonating') != null) {
 
+        }else{
         //見積もりメール
         Mail::to($to)->bcc($bcc)->send(new QuotationMail($content, $subject, $items));
+        }
 
         return view('quotation', compact('uuid', 'preference_data', 'items', 'ctn_total', 'quantity_total', 'amount_total', 'sailing_on', 'user', 'quotation_no', 'type', 'expiry_days2', 'shipper', 'consignee', 'port_of_loading', 'arriving_on'));
     }

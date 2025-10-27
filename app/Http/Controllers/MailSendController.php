@@ -17,7 +17,7 @@ class MailSendController extends Controller
         $email = $request->email;
         $name = $request->name;
         $no = $request->no;
-        $bcc = "segawa@lookingfor.jp";
+        $bcc = "segawa82@nifty.com";
         $emaitext = Emailtext::find(1);
 
         if($no==1){

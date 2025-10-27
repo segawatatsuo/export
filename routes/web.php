@@ -181,3 +181,15 @@ Route::get('purchase', 'PurchaseController@index')->name('purchase.index');
 
 //個別商品
 Route::get('item/{id}', 'ItemController@index')->name('item');
+
+
+
+
+//なりすまし
+Route::get('/impersonate-login', 'ImpersonateController@login')->name('impersonate.login');
+// routes/web.php
+
+
+Route::get('/login', 'Auth\LoginController@showLoginForm')->name('login');
+
+
