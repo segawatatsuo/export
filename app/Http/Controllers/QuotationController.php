@@ -25,6 +25,7 @@ use App\Mail\QuotationMail;
 use Mail;
 use App\Model\Emailtext;
 use App\Model\Order;
+use Illuminate\Support\Facades\Session;
 
 class QuotationController extends Controller
 {
@@ -742,7 +743,7 @@ class QuotationController extends Controller
             'amount_total' => $amount_total,
         ];
 
-        if(session('impersonating') != null) {
+        if(Session::has('impersonating') != null) {
 
         }else{
         //見積もりメール
@@ -755,6 +756,7 @@ class QuotationController extends Controller
     //マイページから再度表示へ
     public function quotation_repeat(Request $request)
     {
+        
         $quotation_no = $request->quotation_no;
         $data = Quotation::where('quotation_no', $quotation_no)->first();
         $preference_data = Preference::first();

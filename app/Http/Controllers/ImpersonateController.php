@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
-
+use Illuminate\Support\Facades\Session;
 class ImpersonateController extends Controller
 {
 /*
@@ -81,6 +81,8 @@ public function login(Request $request)
         'impersonate_token_id' => $impersonateToken->id ?? null
     ]);
     
+
+
     return redirect('/account');
 }
 

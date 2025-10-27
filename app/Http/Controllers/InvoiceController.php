@@ -26,7 +26,7 @@ use Mail;
 use App\Model\Emailtext;
 
 use App\Model\Consignee;
-
+use Illuminate\Support\Facades\Session;
 class InvoiceController extends Controller
 {
     public function invoice(Request $request)
@@ -220,7 +220,7 @@ class InvoiceController extends Controller
         ];
 
         //管理者かどうか
-        if(session('impersonating') != null) {
+        if(Session::has('impersonating') != null) {
             
         }else{
             //インボイスメール
