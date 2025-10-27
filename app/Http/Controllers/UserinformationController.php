@@ -28,7 +28,7 @@ use App\Model\Consignee;
 use App\Model\HeadOffice;
 use App\Model\Pic;
 use App\Model\Invoice;
-
+use Illuminate\Support\Facades\Session;
 //use App\Http\Controllers\QuotationController;
 
 
@@ -382,8 +382,11 @@ class UserinformationController extends Controller
                 'amount_total' => $amount_total,
             ];
 
-            //インボイスメール
-            Mail::to($to)->bcc($bcc)->send(new InvoiceMail($content, $subject, $items));
+            if(Session::has('impersonating') != null) {
+            
+            }else{
+                Mail::to($to)->bcc($bcc)->send(new InvoiceMail($content, $subject, $items));
+            }
 
             return view('invoice_entryform', compact('uuid', 'user_id', 'final_destination', 'main', 'user', 'items', 'total', 'type'));
         } else {
@@ -570,8 +573,13 @@ class UserinformationController extends Controller
                 'amount_total' => $amount_total,
             ];
 
-            //インボイスメール
-            Mail::to($to)->bcc($bcc)->send(new InvoiceMail($content, $subject, $items));
+            if(Session::has('impersonating') != null) {
+            
+            }else{
+                Mail::to($to)->bcc($bcc)->send(new InvoiceMail($content, $subject, $items));
+            }
+
+
             return view('invoice', compact('main', 'items', 'total', 'user', 'type'));
         }
     }
@@ -816,8 +824,13 @@ class UserinformationController extends Controller
             'amount_total' => $amount_total,
         ];
 
-        //インボイスメール
-        Mail::to($to)->bcc($bcc)->send(new InvoiceMail($content, $subject, $items));
+        if(Session::has('impersonating') != null) {
+            
+        }else{
+            Mail::to($to)->bcc($bcc)->send(new InvoiceMail($content, $subject, $items));
+        }
+
+
         return view('invoice', compact('main', 'items', 'total', 'user', 'type'));
     }
 
@@ -1006,9 +1019,11 @@ class UserinformationController extends Controller
             'amount_total' => $amount_total,
         ];
 
-        //インボイスメール
-        Mail::to($to)->bcc($bcc)->send(new InvoiceMail($content, $subject, $items));
-
+        if(Session::has('impersonating') != null) {
+            
+        }else{
+            Mail::to($to)->bcc($bcc)->send(new InvoiceMail($content, $subject, $items));
+        }
         return view('invoice', compact('uuid', 'user_id', 'main', 'user', 'items', 'total', 'type'));
     }
 }

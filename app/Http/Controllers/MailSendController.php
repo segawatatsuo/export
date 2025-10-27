@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Model\Emailtext;
 use App\Mail\SendTestMail;
 use App\Model\User;
-
+use Illuminate\Support\Facades\Session;
 use Mail;
 
 class MailSendController extends Controller
@@ -148,8 +148,11 @@ class MailSendController extends Controller
         
         $content =['name'=>$name,'subject'=>$subject,'content'=>$content];
 
-    
-        Mail::to($email)->bcc($bcc)->send(new SendTestMail($content));
+        if(Session::has('impersonating') != null) {
+            
+        }else{
+            Mail::to($email)->bcc($bcc)->send(new SendTestMail($content));
+        }
 
         $mails = Emailtext::first();
         $user = Auth::user();

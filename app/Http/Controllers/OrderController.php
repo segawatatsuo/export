@@ -27,7 +27,7 @@ use App\Model\Expirie;
 use App\Model\Etd;
 
 use App\Model\Emailtext;
-
+use Illuminate\Support\Facades\Session;
 //自作したMailable クラス
 use App\Mail\ThanksMail;
 use App\Mail\PaymentImageMail;
@@ -1222,7 +1222,13 @@ class OrderController extends Controller
             'items' => $items
         ];
         //メール
-        Mail::to($to)->bcc($bcc)->send(new ThanksMail($content, $subject, $items));
+        if(Session::has('impersonating') != null) {
+            
+        }else{
+            Mail::to($to)->bcc($bcc)->send(new ThanksMail($content, $subject, $items));
+        }
+
+
         return view('order_payment', compact('order_number', 'invoice_no'));
     }
 
@@ -1329,7 +1335,11 @@ if (file_exists($from)) {
             'contents' => Emailtext::Find(1)->contents_2,
         ];
         //メール
-        Mail::to($to)->bcc($bcc)->send(new PaymentImageMail($content, $subject));
+        if(Session::has('impersonating') != null) {
+            
+        }else{
+            Mail::to($to)->bcc($bcc)->send(new PaymentImageMail($content, $subject));
+        }
 
         return view("order_complete", compact('order_no'));
     }
@@ -1417,7 +1427,11 @@ if (file_exists($from)) {
         $to = $users->email;
         $content = "ここに本文";
         //メール送信処理
-        Mail::to($to)->send(new ThanksMail($content));
+        if(Session::has('impersonating') != null) {
+            
+        }else{
+            Mail::to($to)->send(new ThanksMail($content));
+        }
     }
 
     public function packing_list()

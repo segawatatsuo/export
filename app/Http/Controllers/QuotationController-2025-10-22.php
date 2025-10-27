@@ -26,6 +26,7 @@ use App\Model\Consignee;
 use Mail;
 use App\Model\Emailtext;
 use App\Model\Order;
+use Illuminate\Support\Facades\Session;
 
 class QuotationController extends Controller
 {
@@ -660,9 +661,12 @@ function which_tanka2($type, $group, $total, $fedex_low, $fedex_up, $air1_low, $
         ];
 
         //dd($to,$bcc,$subject,$content);
-
-        //見積もりメール
-        Mail::to($to)->bcc($bcc)->send(new QuotationMail($content, $subject, $items));
+        if(Session::has('impersonating') != null) {
+            
+        }else{
+            //見積もりメール
+            Mail::to($to)->bcc($bcc)->send(new QuotationMail($content, $subject, $items));
+        }
 
         return view('quotation', compact('uuid', 'preference_data', 'items', 'ctn_total', 'quantity_total', 'amount_total', 'sailing_on', 'user', 'quotation_no', 'type', 'expiry_days2', 'shipper', 'consignee', 'port_of_loading', 'arriving_on','pic_id'));
     }

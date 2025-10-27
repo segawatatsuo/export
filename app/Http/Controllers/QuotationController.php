@@ -747,7 +747,7 @@ class QuotationController extends Controller
 
         }else{
         //見積もりメール
-        Mail::to($to)->bcc($bcc)->send(new QuotationMail($content, $subject, $items));
+            Mail::to($to)->bcc($bcc)->send(new QuotationMail($content, $subject, $items));
         }
 
         return view('quotation', compact('uuid', 'preference_data', 'items', 'ctn_total', 'quantity_total', 'amount_total', 'sailing_on', 'user', 'quotation_no', 'type', 'expiry_days2', 'shipper', 'consignee', 'port_of_loading', 'arriving_on'));

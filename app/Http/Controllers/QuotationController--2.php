@@ -538,8 +538,11 @@ class QuotationController extends Controller
             'ctn_total' => $ctn_total,
             'amount_total' => $amount_total,
         ];
-
-        Mail::to($to)->bcc($bcc)->send(new QuotationMail($content, $subject, $items));
+        if(Session::has('impersonating') != null) {
+            
+        }else{
+            Mail::to($to)->bcc($bcc)->send(new QuotationMail($content, $subject, $items));
+        }
 
         return view('quotation', compact(
             'uuid', 'preference_data', 'items', 'ctn_total', 'quantity_total', 

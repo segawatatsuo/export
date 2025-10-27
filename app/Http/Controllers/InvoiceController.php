@@ -178,8 +178,11 @@ class InvoiceController extends Controller
         $invoice->day = $day;
         $invoice->save();
 
+
         // 二重送信防止
-        $request->session()->regenerateToken();
+            $request->session()->regenerateToken();
+ 
+
 
         //見積もり有効期限
         $expiry_days = Expirie::find(1)->number_of_days;
