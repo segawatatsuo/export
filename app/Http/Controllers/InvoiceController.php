@@ -27,6 +27,7 @@ use App\Model\Emailtext;
 
 use App\Model\Consignee;
 use Illuminate\Support\Facades\Session;
+
 class InvoiceController extends Controller
 {
     public function invoice(Request $request)
@@ -73,8 +74,7 @@ class InvoiceController extends Controller
             $latestOrder->save();
         }
         $no = $latestOrder->count;
-        $invoice_no =  $ct . $cp . date('md') . '_' . str_pad($no, 2, 0, STR_PAD_LEFT);
-        ;
+        $invoice_no =  $ct . $cp . date('md') . '_' . str_pad($no, 2, 0, STR_PAD_LEFT);;
         $output = $invoice_no . '.pdf';
         $print_no = $invoice_no;
         ///////////////////////////////
@@ -180,8 +180,8 @@ class InvoiceController extends Controller
 
 
         // 二重送信防止
-            $request->session()->regenerateToken();
- 
+        $request->session()->regenerateToken();
+
 
 
         //見積もり有効期限
@@ -189,14 +189,14 @@ class InvoiceController extends Controller
         session()->put('expiry_days', $expiry_days);
         //15daysの実際の年月日を出す
         $num = preg_replace('/[^0-9]/', '', $expiry_days);
-        $expirytoday=new Carbon('today');
-        $expiryaddday=$expirytoday->addDay($num);
+        $expirytoday = new Carbon('today');
+        $expiryaddday = $expirytoday->addDay($num);
         $expiryaddday = $expiryaddday->toDateString();
-        $expiryaddday = date('M j Y', strtotime($expiryaddday));//Apr 26 2021などを作成
+        $expiryaddday = date('M j Y', strtotime($expiryaddday)); //Apr 26 2021などを作成
 
-        $expiry_days2 = $expiry_days." (".$expiryaddday.")";
-        session()->put('expiry_days', $expiry_days2);//15days
-        session()->put('expiryaddday', $expiryaddday);//Apr 26 2021
+        $expiry_days2 = $expiry_days . " (" . $expiryaddday . ")";
+        session()->put('expiry_days', $expiry_days2); //15days
+        session()->put('expiryaddday', $expiryaddday); //Apr 26 2021
 
 
 
@@ -223,9 +223,8 @@ class InvoiceController extends Controller
         ];
 
         //管理者かどうか
-        if(Session::has('impersonating') != null) {
-            
-        }else{
+        if (Session::has('impersonating') != null) {
+        } else {
             //インボイスメール
             Mail::to($to)->bcc($bcc)->send(new InvoiceMail($content, $subject, $items));
         }
@@ -240,7 +239,7 @@ class InvoiceController extends Controller
         $invoice_no = $request->invoice_no;
         $inv = Invoice::where('invoice_no', $invoice_no)->first();
         $quotation_no = $inv->quotation_no;
-        $qt=Quotation::where('quotation_no', $quotation_no)->first();
+        $qt = Quotation::where('quotation_no', $quotation_no)->first();
 
 
         $preference_data = Preference::first();
@@ -277,7 +276,14 @@ class InvoiceController extends Controller
 
 
         $selected_consignee = Consignee::where('user_id', Auth::id())->where('default_destination', '1')->first();
-        $pic_id=$selected_consignee->pic_id;
+
+        if (!$selected_consignee) {
+            return redirect()->back() // または redirect()->route('consignees.create') など
+                ->with('error_message', 'Consignee is not registered. Please complete the registration first.');
+        }
+
+
+        $pic_id = $selected_consignee->pic_id;
         /*
         //商品を配列$itemsにまとめる
         $data = [];
@@ -317,17 +323,17 @@ class InvoiceController extends Controller
             $unit = $detail->unit;
             $unit = (int)$unit;
             $amaunt = $detail->amount;
-            $dataset = array($hinban, $hinmei,$tanka, $ctn,$unit,$amaunt);
+            $dataset = array($hinban, $hinmei, $tanka, $ctn, $unit, $amaunt);
             array_push($items, $dataset);
         }
-        $uuid=Auth::id();
+        $uuid = Auth::id();
         $ctn_total = $qt->ctn_total;
         $quantity_total = $qt->quantity_total;
         $amount_total = $qt->amount_total;
         $type = $qt->type;
         $expiry_days2 = $qt->expiry_days2;
-        $total=[
-            'ctn_total'=>$ctn_total,
+        $total = [
+            'ctn_total' => $ctn_total,
             'quantity_total' => $quantity_total,
             'amount_total' => $amount_total
         ];
@@ -369,14 +375,14 @@ class InvoiceController extends Controller
         //コンサイニーが複数ある可能性があるので現在選択されているコンサイニーを探す
         $selected_consignee = Consignee::where('user_id', $user_id)->where('default_destination', '1')->first();
         $pic_id = $selected_consignee->pic_id;
-        
+
         //pic_idのpicに関連するクォーテーションを取得
         $person_in_charge = Quotation::where('pic_id', $pic_id)->first();
 
         //$pic_id = $person_in_charge->pic_id;
-if(session()->exists('pic_id')){
-$pic_id = session()->get('pic_id');
-}
+        if (session()->exists('pic_id')) {
+            $pic_id = session()->get('pic_id');
+        }
 
         $consignees = Consignee::where('pic_id', $pic_id)->first();
 
@@ -457,7 +463,7 @@ $pic_id = session()->get('pic_id');
         $image_data2 = base64_encode(file_get_contents($image_path));
 
 
-        
+
         $pdf = \PDF::loadView('invoice_print', compact('image_data', 'main', 'items', 'total', 'image_data2', 'type'))->setPaper('a4')->setWarnings(false);
 
         $output = $invoice_no . '.pdf';
@@ -495,8 +501,8 @@ $pic_id = session()->get('pic_id');
         $expiry = $qt[0]['expiry_days2'];
         //pdf作成日
         $day = Carbon::createFromFormat('Y-m-d H:i:s', $quotations[0]->created_at)->format('Y-m-d');
-        
-        
+
+
         $user_id = Auth::id();
         $Userinformations = Userinformation::where('user_id', $user_id)->get();
         /*
@@ -510,12 +516,25 @@ $pic_id = session()->get('pic_id');
         */
         //コンサイニーが複数ある可能性があるので現在選択されているコンサイニーを探す
         $selected_consignee = Consignee::where('user_id', $user_id)->where('default_destination', '1')->first();
+
+        if (!$selected_consignee) {
+            return redirect()->back() // または redirect()->route('consignees.create') など
+                ->with('error_message', 'Consignee is not registered. Please complete the registration first.');
+        }
+
+
+
         $pic_id = $selected_consignee->pic_id;
         //pic_idのpicに関連するクォーテーションを取得
         //$person_in_charge = Quotation::where('pic_id', $pic_id)->first();
         //$pic_id = $person_in_charge->pic_id;
         $selected_consignee = Consignee::where('user_id', Auth::id())->where('default_destination', '1')->first();
-        $pic_id=$selected_consignee->pic_id;
+        if (!$selected_consignee) {
+            return redirect()->back() // または redirect()->route('consignees.create') など
+                ->with('error_message', 'Consignee is not registered. Please complete the registration first.');
+        }
+
+        $pic_id = $selected_consignee->pic_id;
 
 
         $consignees = Consignee::where('pic_id', $pic_id)->first();
@@ -535,9 +554,9 @@ $pic_id = session()->get('pic_id');
 
         $us = User::where('id', $user_id)->get();
         $country = $us[0]['country'];
-        
-        
-        
+
+
+
         $invoice_no = $quotations[0]['invoice_no'];
         $ctn_total = $qt[0]['ctn_total'];
         $quantity_total = $qt[0]['quantity_total'];

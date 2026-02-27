@@ -251,8 +251,8 @@ class OrderController extends Controller
 
 
         $consignee_no = $quotations[0]->consignee_no;
-       //consignee = Userinformation::where('user_id', $consignee_no)->first()->consignee;
-        $consignee = $quotations[0]->consignee;//これが正しい
+        //consignee = Userinformation::where('user_id', $consignee_no)->first()->consignee;
+        $consignee = $quotations[0]->consignee; //これが正しい
         //dd($quotations[0]->consignees_address_line1);//これが正しい
 
 
@@ -265,7 +265,7 @@ class OrderController extends Controller
 
         $iv = Invoice::where('quotation_no', $quotation_no)->first();
         $invoice_no = $iv->invoice_no;
-        
+
         $uuid = $quotation_no;
         $day = $iv->day;
 
@@ -341,7 +341,7 @@ class OrderController extends Controller
             'city' => $quotations[0]->consignees_city,
             'state' => $quotations[0]->consignees_state,
             'country' => $quotations[0]->consignees_state,
-            'country_codes' => $quotations[0]->consignees_country_codes	,
+            'country_codes' => $quotations[0]->consignees_country_codes,
             'zip' => $quotations[0]->consignees_postal_code,
             'phone' => $quotations[0]->consignees_phone,
             'fax' => $ui->fax
@@ -478,7 +478,7 @@ class OrderController extends Controller
         foreach ($data as $line) {
             array_push($cartons, $line->ctn);
         }
-
+        /*
         $n = 1;
         $markes_numbers = [];
         foreach ($cartons as $cc) {
@@ -604,9 +604,247 @@ class OrderController extends Controller
                 }
                 array_push($markes_numbers, $markes_number);
             }
+
+            //12回目
+            if ($n == 12) {
+                $ca = $cartons[0] + $cartons[1] + $cartons[2] + $cartons[3] + $cartons[4] + $cartons[5] + $cartons[6] + $cartons[7] + $cartons[8] + $cartons[9] + $cartons[10] + 1;
+                $nx = $cartons[0] + $cartons[1] + $cartons[2] + $cartons[3] + $cartons[4] + $cartons[5] + $cartons[6] + $cartons[7] + $cartons[8] + $cartons[9] + $cartons[10] + $cartons[11];
+                if ($ca != $nx) {
+                    $markes_number = $ca . " - " . $nx;
+                } else {
+                    $markes_number = $ca;
+                }
+                array_push($markes_numbers, $markes_number);
+            }
+
+            if ($n == 13) {
+                $ca = $cartons[0] + $cartons[1] + $cartons[2] + $cartons[3] + $cartons[4] + $cartons[5] + $cartons[6] + $cartons[7] + $cartons[8] + $cartons[9] + $cartons[10] + $cartons[11] + 1;
+                $nx = $cartons[0] + $cartons[1] + $cartons[2] + $cartons[3] + $cartons[4] + $cartons[5] + $cartons[6] + $cartons[7] + $cartons[8] + $cartons[9] + $cartons[10] + $cartons[11] + $cartons[12];
+                if ($ca != $nx) {
+                    $markes_number = $ca . " - " . $nx;
+                } else {
+                    $markes_number = $ca;
+                }
+                array_push($markes_numbers, $markes_number);
+            }
+
+            if ($n == 14) {
+                $ca = $cartons[0] + $cartons[1] + $cartons[2] + $cartons[3] + $cartons[4] + $cartons[5] + $cartons[6] + $cartons[7] + $cartons[8] + $cartons[9] + $cartons[10] + $cartons[11] + $cartons[12] + 1;
+                $nx = $cartons[0] + $cartons[1] + $cartons[2] + $cartons[3] + $cartons[4] + $cartons[5] + $cartons[6] + $cartons[7] + $cartons[8] + $cartons[9] + $cartons[10] + $cartons[11] + $cartons[12] + $cartons[13];
+                if ($ca != $nx) {
+                    $markes_number = $ca . " - " . $nx;
+                } else {
+                    $markes_number = $ca;
+                }
+                array_push($markes_numbers, $markes_number);
+            }
+
+            if ($n == 15) {
+                $ca = $cartons[0] + $cartons[1] + $cartons[2] + $cartons[3] + $cartons[4] + $cartons[5] + $cartons[6] + $cartons[7] + $cartons[8] + $cartons[9] + $cartons[10] + $cartons[11] + $cartons[12] + $cartons[13] + 1;
+                $nx = $cartons[0] + $cartons[1] + $cartons[2] + $cartons[3] + $cartons[4] + $cartons[5] + $cartons[6] + $cartons[7] + $cartons[8] + $cartons[9] + $cartons[10] + $cartons[11] + $cartons[12] + $cartons[13] + $cartons[14];
+                if ($ca != $nx) {
+                    $markes_number = $ca . " - " . $nx;
+                } else {
+                    $markes_number = $ca;
+                }
+                array_push($markes_numbers, $markes_number);
+            }
+
+            if ($n == 16) {
+                $ca = $cartons[0] + $cartons[1] + $cartons[2] + $cartons[3] + $cartons[4] + $cartons[5] + $cartons[6] + $cartons[7] + $cartons[8] + $cartons[9] + $cartons[10] + $cartons[11] + $cartons[12] + $cartons[13] + $cartons[14] + 1;
+                $nx = $cartons[0] + $cartons[1] + $cartons[2] + $cartons[3] + $cartons[4] + $cartons[5] + $cartons[6] + $cartons[7] + $cartons[8] + $cartons[9] + $cartons[10] + $cartons[11] + $cartons[12] + $cartons[13] + $cartons[14] + $cartons[15];
+                if ($ca != $nx) {
+                    $markes_number = $ca . " - " . $nx;
+                } else {
+                    $markes_number = $ca;
+                }
+                array_push($markes_numbers, $markes_number);
+            }
+
+            if ($n == 17) {
+                $ca = $cartons[0] + $cartons[1] + $cartons[2] + $cartons[3] + $cartons[4] + $cartons[5] + $cartons[6] + $cartons[7] + $cartons[8] + $cartons[9] + $cartons[10] + $cartons[11] + $cartons[12] + $cartons[13] + $cartons[14] + $cartons[15] + 1;
+                $nx = $cartons[0] + $cartons[1] + $cartons[2] + $cartons[3] + $cartons[4] + $cartons[5] + $cartons[6] + $cartons[7] + $cartons[8] + $cartons[9] + $cartons[10] + $cartons[11] + $cartons[12] + $cartons[13] + $cartons[14] + $cartons[15] + $cartons[16];
+                if ($ca != $nx) {
+                    $markes_number = $ca . " - " . $nx;
+                } else {
+                    $markes_number = $ca;
+                }
+                array_push($markes_numbers, $markes_number);
+            }
+
+            if ($n == 18) {
+                $ca = $cartons[0] + $cartons[1] + $cartons[2] + $cartons[3] + $cartons[4] + $cartons[5] + $cartons[6] + $cartons[7] + $cartons[8] + $cartons[9] + $cartons[10] + $cartons[11] + $cartons[12] + $cartons[13] + $cartons[14] + $cartons[15] + $cartons[16] + 1;
+                $nx = $cartons[0] + $cartons[1] + $cartons[2] + $cartons[3] + $cartons[4] + $cartons[5] + $cartons[6] + $cartons[7] + $cartons[8] + $cartons[9] + $cartons[10] + $cartons[11] + $cartons[12] + $cartons[13] + $cartons[14] + $cartons[15] + $cartons[16] + $cartons[17];
+                if ($ca != $nx) {
+                    $markes_number = $ca . " - " . $nx;
+                } else {
+                    $markes_number = $ca;
+                }
+                array_push($markes_numbers, $markes_number);
+            }
+
+            if ($n == 19) {
+                $ca = $cartons[0] + $cartons[1] + $cartons[2] + $cartons[3] + $cartons[4] + $cartons[5] + $cartons[6] + $cartons[7] + $cartons[8] + $cartons[9] + $cartons[10] + $cartons[11] + $cartons[12] + $cartons[13] + $cartons[14] + $cartons[15] + $cartons[16] + $cartons[17] + 1;
+                $nx = $cartons[0] + $cartons[1] + $cartons[2] + $cartons[3] + $cartons[4] + $cartons[5] + $cartons[6] + $cartons[7] + $cartons[8] + $cartons[9] + $cartons[10] + $cartons[11] + $cartons[12] + $cartons[13] + $cartons[14] + $cartons[15] + $cartons[16] + $cartons[17] + $cartons[18];
+                if ($ca != $nx) {
+                    $markes_number = $ca . " - " . $nx;
+                } else {
+                    $markes_number = $ca;
+                }
+                array_push($markes_numbers, $markes_number);
+            }
+
+            if ($n == 20) {
+                $ca = $cartons[0] + $cartons[1] + $cartons[2] + $cartons[3] + $cartons[4] + $cartons[5] + $cartons[6] + $cartons[7] + $cartons[8] + $cartons[9] + $cartons[10] + $cartons[11] + $cartons[12] + $cartons[13] + $cartons[14] + $cartons[15] + $cartons[16] + $cartons[17] + $cartons[18] + 1;
+                $nx = $cartons[0] + $cartons[1] + $cartons[2] + $cartons[3] + $cartons[4] + $cartons[5] + $cartons[6] + $cartons[7] + $cartons[8] + $cartons[9] + $cartons[10] + $cartons[11] + $cartons[12] + $cartons[13] + $cartons[14] + $cartons[15] + $cartons[16] + $cartons[17] + $cartons[18] + $cartons[19];
+                if ($ca != $nx) {
+                    $markes_number = $ca . " - " . $nx;
+                } else {
+                    $markes_number = $ca;
+                }
+                array_push($markes_numbers, $markes_number);
+            }
+            if ($n == 21) {
+                $ca = $cartons[0] + $cartons[1] + $cartons[2] + $cartons[3] + $cartons[4] + $cartons[5] + $cartons[6] + $cartons[7] + $cartons[8] + $cartons[9] + $cartons[10] + $cartons[11] + $cartons[12] + $cartons[13] + $cartons[14] + $cartons[15] + $cartons[16] + $cartons[17] + $cartons[18] + $cartons[19] + 1;
+                $nx = $cartons[0] + $cartons[1] + $cartons[2] + $cartons[3] + $cartons[4] + $cartons[5] + $cartons[6] + $cartons[7] + $cartons[8] + $cartons[9] + $cartons[10] + $cartons[11] + $cartons[12] + $cartons[13] + $cartons[14] + $cartons[15] + $cartons[16] + $cartons[17] + $cartons[18] + $cartons[19] + $cartons[20];
+                if ($ca != $nx) {
+                    $markes_number = $ca . " - " . $nx;
+                } else {
+                    $markes_number = $ca;
+                }
+                array_push($markes_numbers, $markes_number);
+            }
+
+            if ($n == 22) {
+                $ca = $cartons[0] + $cartons[1] + $cartons[2] + $cartons[3] + $cartons[4] + $cartons[5] + $cartons[6] + $cartons[7] + $cartons[8] + $cartons[9] + $cartons[10] + $cartons[11] + $cartons[12] + $cartons[13] + $cartons[14] + $cartons[15] + $cartons[16] + $cartons[17] + $cartons[18] + $cartons[19] + $cartons[20] + 1;
+                $nx = $cartons[0] + $cartons[1] + $cartons[2] + $cartons[3] + $cartons[4] + $cartons[5] + $cartons[6] + $cartons[7] + $cartons[8] + $cartons[9] + $cartons[10] + $cartons[11] + $cartons[12] + $cartons[13] + $cartons[14] + $cartons[15] + $cartons[16] + $cartons[17] + $cartons[18] + $cartons[19] + $cartons[20] + $cartons[21];
+                if ($ca != $nx) {
+                    $markes_number = $ca . " - " . $nx;
+                } else {
+                    $markes_number = $ca;
+                }
+                array_push($markes_numbers, $markes_number);
+            }
+
+
+            if ($n == 23) {
+                $ca = $cartons[0] + $cartons[1] + $cartons[2] + $cartons[3] + $cartons[4] + $cartons[5] + $cartons[6] + $cartons[7] + $cartons[8] + $cartons[9] + $cartons[10] + $cartons[11] + $cartons[12] + $cartons[13] + $cartons[14] + $cartons[15] + $cartons[16] + $cartons[17] + $cartons[18] + $cartons[19] + $cartons[20] + $cartons[21] + 1;
+                $nx = $cartons[0] + $cartons[1] + $cartons[2] + $cartons[3] + $cartons[4] + $cartons[5] + $cartons[6] + $cartons[7] + $cartons[8] + $cartons[9] + $cartons[10] + $cartons[11] + $cartons[12] + $cartons[13] + $cartons[14] + $cartons[15] + $cartons[16] + $cartons[17] + $cartons[18] + $cartons[19] + $cartons[20] + $cartons[21] + $cartons[22];
+                if ($ca != $nx) {
+                    $markes_number = $ca . " - " . $nx;
+                } else {
+                    $markes_number = $ca;
+                }
+                array_push($markes_numbers, $markes_number);
+            }
+
+            if ($n == 24) {
+                $ca = $cartons[0] + $cartons[1] + $cartons[2] + $cartons[3] + $cartons[4] + $cartons[5] + $cartons[6] + $cartons[7] + $cartons[8] + $cartons[9] + $cartons[10] + $cartons[11] + $cartons[12] + $cartons[13] + $cartons[14] + $cartons[15] + $cartons[16] + $cartons[17] + $cartons[18] + $cartons[19] + $cartons[20] + $cartons[21] + $cartons[22] + 1;
+                $nx = $cartons[0] + $cartons[1] + $cartons[2] + $cartons[3] + $cartons[4] + $cartons[5] + $cartons[6] + $cartons[7] + $cartons[8] + $cartons[9] + $cartons[10] + $cartons[11] + $cartons[12] + $cartons[13] + $cartons[14] + $cartons[15] + $cartons[16] + $cartons[17] + $cartons[18] + $cartons[19] + $cartons[20] + $cartons[21] + $cartons[22] + $cartons[23];
+                if ($ca != $nx) {
+                    $markes_number = $ca . " - " . $nx;
+                } else {
+                    $markes_number = $ca;
+                }
+                array_push($markes_numbers, $markes_number);
+            }
+            if ($n == 25) {
+                $ca = $cartons[0] + $cartons[1] + $cartons[2] + $cartons[3] + $cartons[4] + $cartons[5] + $cartons[6] + $cartons[7] + $cartons[8] + $cartons[9] + $cartons[10] + $cartons[11] + $cartons[12] + $cartons[13] + $cartons[14] + $cartons[15] + $cartons[16] + $cartons[17] + $cartons[18] + $cartons[19] + $cartons[20] + $cartons[21] + $cartons[22] + $cartons[23] + 1;
+                $nx = $cartons[0] + $cartons[1] + $cartons[2] + $cartons[3] + $cartons[4] + $cartons[5] + $cartons[6] + $cartons[7] + $cartons[8] + $cartons[9] + $cartons[10] + $cartons[11] + $cartons[12] + $cartons[13] + $cartons[14] + $cartons[15] + $cartons[16] + $cartons[17] + $cartons[18] + $cartons[19] + $cartons[20] + $cartons[21] + $cartons[22] + $cartons[23] + $cartons[24];
+                if ($ca != $nx) {
+                    $markes_number = $ca . " - " . $nx;
+                } else {
+                    $markes_number = $ca;
+                }
+                array_push($markes_numbers, $markes_number);
+            }
+            if ($n == 26) {
+                $ca = $cartons[0] + $cartons[1] + $cartons[2] + $cartons[3] + $cartons[4] + $cartons[5] + $cartons[6] + $cartons[7] + $cartons[8] + $cartons[9] + $cartons[10] + $cartons[11] + $cartons[12] + $cartons[13] + $cartons[14] + $cartons[15] + $cartons[16] + $cartons[17] + $cartons[18] + $cartons[19] + $cartons[20] + $cartons[21] + $cartons[22] + $cartons[23] + $cartons[24] + 1;
+                $nx = $cartons[0] + $cartons[1] + $cartons[2] + $cartons[3] + $cartons[4] + $cartons[5] + $cartons[6] + $cartons[7] + $cartons[8] + $cartons[9] + $cartons[10] + $cartons[11] + $cartons[12] + $cartons[13] + $cartons[14] + $cartons[15] + $cartons[16] + $cartons[17] + $cartons[18] + $cartons[19] + $cartons[20] + $cartons[21] + $cartons[22] + $cartons[23] + $cartons[24] + $cartons[25];
+                if ($ca != $nx) {
+                    $markes_number = $ca . " - " . $nx;
+                } else {
+                    $markes_number = $ca;
+                }
+                array_push($markes_numbers, $markes_number);
+            }
+            if ($n == 27) {
+                $ca = $cartons[0] + $cartons[1] + $cartons[2] + $cartons[3] + $cartons[4] + $cartons[5] + $cartons[6] + $cartons[7] + $cartons[8] + $cartons[9] + $cartons[10] + $cartons[11] + $cartons[12] + $cartons[13] + $cartons[14] + $cartons[15] + $cartons[16] + $cartons[17] + $cartons[18] + $cartons[19] + $cartons[20] + $cartons[21] + $cartons[22] + $cartons[23] + $cartons[24] + $cartons[25] + 1;
+                $nx = $cartons[0] + $cartons[1] + $cartons[2] + $cartons[3] + $cartons[4] + $cartons[5] + $cartons[6] + $cartons[7] + $cartons[8] + $cartons[9] + $cartons[10] + $cartons[11] + $cartons[12] + $cartons[13] + $cartons[14] + $cartons[15] + $cartons[16] + $cartons[17] + $cartons[18] + $cartons[19] + $cartons[20] + $cartons[21] + $cartons[22] + $cartons[23] + $cartons[24] + $cartons[25] + $cartons[26];
+                if ($ca != $nx) {
+                    $markes_number = $ca . " - " . $nx;
+                } else {
+                    $markes_number = $ca;
+                }
+                array_push($markes_numbers, $markes_number);
+            }
+
+            if ($n == 28) {
+                $ca = $cartons[0] + $cartons[1] + $cartons[2] + $cartons[3] + $cartons[4] + $cartons[5] + $cartons[6] + $cartons[7] + $cartons[8] + $cartons[9] + $cartons[10] + $cartons[11] + $cartons[12] + $cartons[13] + $cartons[14] + $cartons[15] + $cartons[16] + $cartons[17] + $cartons[18] + $cartons[19] + $cartons[20] + $cartons[21] + $cartons[22] + $cartons[23] + $cartons[24] + $cartons[25] + $cartons[26] + 1;
+                $nx = $cartons[0] + $cartons[1] + $cartons[2] + $cartons[3] + $cartons[4] + $cartons[5] + $cartons[6] + $cartons[7] + $cartons[8] + $cartons[9] + $cartons[10] + $cartons[11] + $cartons[12] + $cartons[13] + $cartons[14] + $cartons[15] + $cartons[16] + $cartons[17] + $cartons[18] + $cartons[19] + $cartons[20] + $cartons[21] + $cartons[22] + $cartons[23] + $cartons[24] + $cartons[25] + $cartons[26] + $cartons[27];
+                if ($ca != $nx) {
+                    $markes_number = $ca . " - " . $nx;
+                } else {
+                    $markes_number = $ca;
+                }
+                array_push($markes_numbers, $markes_number);
+            }
+
+            if ($n == 29) {
+                $ca = $cartons[0] + $cartons[1] + $cartons[2] + $cartons[3] + $cartons[4] + $cartons[5] + $cartons[6] + $cartons[7] + $cartons[8] + $cartons[9] + $cartons[10] + $cartons[11] + $cartons[12] + $cartons[13] + $cartons[14] + $cartons[15] + $cartons[16] + $cartons[17] + $cartons[18] + $cartons[19] + $cartons[20] + $cartons[21] + $cartons[22] + $cartons[23] + $cartons[24] + $cartons[25] + $cartons[26] + $cartons[27] + 1;
+                $nx = $cartons[0] + $cartons[1] + $cartons[2] + $cartons[3] + $cartons[4] + $cartons[5] + $cartons[6] + $cartons[7] + $cartons[8] + $cartons[9] + $cartons[10] + $cartons[11] + $cartons[12] + $cartons[13] + $cartons[14] + $cartons[15] + $cartons[16] + $cartons[17] + $cartons[18] + $cartons[19] + $cartons[20] + $cartons[21] + $cartons[22] + $cartons[23] + $cartons[24] + $cartons[25] + $cartons[26] + $cartons[27] + $cartons[28];
+                if ($ca != $nx) {
+                    $markes_number = $ca . " - " . $nx;
+                } else {
+                    $markes_number = $ca;
+                }
+                array_push($markes_numbers, $markes_number);
+            }
+
+            if ($n == 30) {
+                $ca = $cartons[0] + $cartons[1] + $cartons[2] + $cartons[3] + $cartons[4] + $cartons[5] + $cartons[6] + $cartons[7] + $cartons[8] + $cartons[9] + $cartons[10] + $cartons[11] + $cartons[12] + $cartons[13] + $cartons[14] + $cartons[15] + $cartons[16] + $cartons[17] + $cartons[18] + $cartons[19] + $cartons[20] + $cartons[21] + $cartons[22] + $cartons[23] + $cartons[24] + $cartons[25] + $cartons[26] + $cartons[27] + $cartons[28] + 1;
+                $nx = $cartons[0] + $cartons[1] + $cartons[2] + $cartons[3] + $cartons[4] + $cartons[5] + $cartons[6] + $cartons[7] + $cartons[8] + $cartons[9] + $cartons[10] + $cartons[11] + $cartons[12] + $cartons[13] + $cartons[14] + $cartons[15] + $cartons[16] + $cartons[17] + $cartons[18] + $cartons[19] + $cartons[20] + $cartons[21] + $cartons[22] + $cartons[23] + $cartons[24] + $cartons[25] + $cartons[26] + $cartons[27] + $cartons[28] + $cartons[29];
+                if ($ca != $nx) {
+                    $markes_number = $ca . " - " . $nx;
+                } else {
+                    $markes_number = $ca;
+                }
+                array_push($markes_numbers, $markes_number);
+            }
+
             $n = $n + 1;
         }
+*/
 
+        // 商品番号とカートン数の取得
+        $cartons = [];
+        $data = Order_detail::where('order_no', $order_number)->get();
+        foreach ($data as $line) {
+            array_push($cartons, $line->ctn);
+        }
+
+        // --- ここから修正：無制限対応ロジック ---
+        $markes_numbers = [];
+        $current_total = 0; // 現在までの累計カートン数
+
+        foreach ($cartons as $cc) {
+            $start_no = $current_total + 1;      // 開始番号
+            $end_no = $current_total + $cc;     // 終了番号（累計）
+
+            if ($start_no == $end_no) {
+                // カートン数が1つの場合 (例: "5")
+                $markes_number = $start_no;
+            } else {
+                // カートン数が複数の場合 (例: "1 - 5")
+                $markes_number = $start_no . " - " . $end_no;
+            }
+
+            array_push($markes_numbers, $markes_number);
+
+            // 次のループのために、今回のカートン数を累計に加算する
+            $current_total += $cc;
+        }
+        // --- ここまで ---
 
         $data = Order_detail_confirm::where('order_no', $order_number)->get();
         $x = 0;
@@ -715,6 +953,13 @@ class OrderController extends Controller
         //トータル
         $order = Order_confirm::where('order_no', $order_number)->first();
 
+        // データが見つからなかった場合の処理
+        if (!$order) {
+            // エラーメッセージを出して前の画面に戻る、などの処理
+            return redirect()->back()->with('error', '注文データが見つかりませんでした。');
+        }
+
+
         $pdf->Text(66, 263, htmlspecialchars($order->ctn_total . ' cartons'));
         $pdf->Text(135, 261, htmlspecialchars($total_weight_net . 'kg'));
         $pdf->Text(135, 266, htmlspecialchars($total_weight_gross . 'kg'));
@@ -809,10 +1054,7 @@ class OrderController extends Controller
                 $from = '/home/segawa/export/public/storage/order/' . $file_name;
                 $to = '/home/segawa/ccmapp/public/storage/order/' . $file_name;
                 copy($from, $to);
-            }  
-            
-            
-            else {
+            } else {
                 //お名前用
                 /*
                 $from = '/home/r2325683/export/public/storage/order/' . $file_name;
@@ -842,6 +1084,11 @@ class OrderController extends Controller
     {
         $order_number = $request->order_number;
         $order_conform = Order_confirm::where('order_no', $order_number)->get();
+        // 箱が空っぽだったらエラーにする
+        if ($order_conform->isEmpty()) {
+            return abort(404); // 404エラー画面を出す、などの対応
+        }
+
         $order_detail_confirms = Order_detail_confirm::where('order_no', $order_number)->get();
         //dd($order_detail_confirms);
 
@@ -946,6 +1193,7 @@ class OrderController extends Controller
             array_push($cartons, $line->ctn);
         }
 
+        /*
         $n = 1;
         $markes_numbers = [];
         foreach ($cartons as $cc) {
@@ -1071,16 +1319,263 @@ class OrderController extends Controller
                 }
                 array_push($markes_numbers, $markes_number);
             }
+
+            //12回目
+            if ($n == 12) {
+                $ca = $cartons[0] + $cartons[1] + $cartons[2] + $cartons[3] + $cartons[4] + $cartons[5] + $cartons[6] + $cartons[7] + $cartons[8] + $cartons[9] + $cartons[10] + 1;
+                $nx = $cartons[0] + $cartons[1] + $cartons[2] + $cartons[3] + $cartons[4] + $cartons[5] + $cartons[6] + $cartons[7] + $cartons[8] + $cartons[9] + $cartons[10] + $cartons[11];
+                if ($ca != $nx) {
+                    $markes_number = $ca . " - " . $nx;
+                } else {
+                    $markes_number = $ca;
+                }
+                array_push($markes_numbers, $markes_number);
+            }
+
+            if ($n == 13) {
+                $ca = $cartons[0] + $cartons[1] + $cartons[2] + $cartons[3] + $cartons[4] + $cartons[5] + $cartons[6] + $cartons[7] + $cartons[8] + $cartons[9] + $cartons[10] + $cartons[11] + 1;
+                $nx = $cartons[0] + $cartons[1] + $cartons[2] + $cartons[3] + $cartons[4] + $cartons[5] + $cartons[6] + $cartons[7] + $cartons[8] + $cartons[9] + $cartons[10] + $cartons[11] + $cartons[12];
+                if ($ca != $nx) {
+                    $markes_number = $ca . " - " . $nx;
+                } else {
+                    $markes_number = $ca;
+                }
+                array_push($markes_numbers, $markes_number);
+            }
+
+            if ($n == 14) {
+                $ca = $cartons[0] + $cartons[1] + $cartons[2] + $cartons[3] + $cartons[4] + $cartons[5] + $cartons[6] + $cartons[7] + $cartons[8] + $cartons[9] + $cartons[10] + $cartons[11] + $cartons[12] + 1;
+                $nx = $cartons[0] + $cartons[1] + $cartons[2] + $cartons[3] + $cartons[4] + $cartons[5] + $cartons[6] + $cartons[7] + $cartons[8] + $cartons[9] + $cartons[10] + $cartons[11] + $cartons[12] + $cartons[13];
+                if ($ca != $nx) {
+                    $markes_number = $ca . " - " . $nx;
+                } else {
+                    $markes_number = $ca;
+                }
+                array_push($markes_numbers, $markes_number);
+            }
+
+            if ($n == 15) {
+                $ca = $cartons[0] + $cartons[1] + $cartons[2] + $cartons[3] + $cartons[4] + $cartons[5] + $cartons[6] + $cartons[7] + $cartons[8] + $cartons[9] + $cartons[10] + $cartons[11] + $cartons[12] + $cartons[13] + 1;
+                $nx = $cartons[0] + $cartons[1] + $cartons[2] + $cartons[3] + $cartons[4] + $cartons[5] + $cartons[6] + $cartons[7] + $cartons[8] + $cartons[9] + $cartons[10] + $cartons[11] + $cartons[12] + $cartons[13] + $cartons[14];
+                if ($ca != $nx) {
+                    $markes_number = $ca . " - " . $nx;
+                } else {
+                    $markes_number = $ca;
+                }
+                array_push($markes_numbers, $markes_number);
+            }
+
+            if ($n == 16) {
+                $ca = $cartons[0] + $cartons[1] + $cartons[2] + $cartons[3] + $cartons[4] + $cartons[5] + $cartons[6] + $cartons[7] + $cartons[8] + $cartons[9] + $cartons[10] + $cartons[11] + $cartons[12] + $cartons[13] + $cartons[14] + 1;
+                $nx = $cartons[0] + $cartons[1] + $cartons[2] + $cartons[3] + $cartons[4] + $cartons[5] + $cartons[6] + $cartons[7] + $cartons[8] + $cartons[9] + $cartons[10] + $cartons[11] + $cartons[12] + $cartons[13] + $cartons[14] + $cartons[15];
+                if ($ca != $nx) {
+                    $markes_number = $ca . " - " . $nx;
+                } else {
+                    $markes_number = $ca;
+                }
+                array_push($markes_numbers, $markes_number);
+            }
+
+            if ($n == 17) {
+                $ca = $cartons[0] + $cartons[1] + $cartons[2] + $cartons[3] + $cartons[4] + $cartons[5] + $cartons[6] + $cartons[7] + $cartons[8] + $cartons[9] + $cartons[10] + $cartons[11] + $cartons[12] + $cartons[13] + $cartons[14] + $cartons[15] + 1;
+                $nx = $cartons[0] + $cartons[1] + $cartons[2] + $cartons[3] + $cartons[4] + $cartons[5] + $cartons[6] + $cartons[7] + $cartons[8] + $cartons[9] + $cartons[10] + $cartons[11] + $cartons[12] + $cartons[13] + $cartons[14] + $cartons[15] + $cartons[16];
+                if ($ca != $nx) {
+                    $markes_number = $ca . " - " . $nx;
+                } else {
+                    $markes_number = $ca;
+                }
+                array_push($markes_numbers, $markes_number);
+            }
+
+            if ($n == 18) {
+                $ca = $cartons[0] + $cartons[1] + $cartons[2] + $cartons[3] + $cartons[4] + $cartons[5] + $cartons[6] + $cartons[7] + $cartons[8] + $cartons[9] + $cartons[10] + $cartons[11] + $cartons[12] + $cartons[13] + $cartons[14] + $cartons[15] + $cartons[16] + 1;
+                $nx = $cartons[0] + $cartons[1] + $cartons[2] + $cartons[3] + $cartons[4] + $cartons[5] + $cartons[6] + $cartons[7] + $cartons[8] + $cartons[9] + $cartons[10] + $cartons[11] + $cartons[12] + $cartons[13] + $cartons[14] + $cartons[15] + $cartons[16] + $cartons[17];
+                if ($ca != $nx) {
+                    $markes_number = $ca . " - " . $nx;
+                } else {
+                    $markes_number = $ca;
+                }
+                array_push($markes_numbers, $markes_number);
+            }
+
+            if ($n == 19) {
+                $ca = $cartons[0] + $cartons[1] + $cartons[2] + $cartons[3] + $cartons[4] + $cartons[5] + $cartons[6] + $cartons[7] + $cartons[8] + $cartons[9] + $cartons[10] + $cartons[11] + $cartons[12] + $cartons[13] + $cartons[14] + $cartons[15] + $cartons[16] + $cartons[17] + 1;
+                $nx = $cartons[0] + $cartons[1] + $cartons[2] + $cartons[3] + $cartons[4] + $cartons[5] + $cartons[6] + $cartons[7] + $cartons[8] + $cartons[9] + $cartons[10] + $cartons[11] + $cartons[12] + $cartons[13] + $cartons[14] + $cartons[15] + $cartons[16] + $cartons[17] + $cartons[18];
+                if ($ca != $nx) {
+                    $markes_number = $ca . " - " . $nx;
+                } else {
+                    $markes_number = $ca;
+                }
+                array_push($markes_numbers, $markes_number);
+            }
+
+            if ($n == 20) {
+                $ca = $cartons[0] + $cartons[1] + $cartons[2] + $cartons[3] + $cartons[4] + $cartons[5] + $cartons[6] + $cartons[7] + $cartons[8] + $cartons[9] + $cartons[10] + $cartons[11] + $cartons[12] + $cartons[13] + $cartons[14] + $cartons[15] + $cartons[16] + $cartons[17] + $cartons[18] + 1;
+                $nx = $cartons[0] + $cartons[1] + $cartons[2] + $cartons[3] + $cartons[4] + $cartons[5] + $cartons[6] + $cartons[7] + $cartons[8] + $cartons[9] + $cartons[10] + $cartons[11] + $cartons[12] + $cartons[13] + $cartons[14] + $cartons[15] + $cartons[16] + $cartons[17] + $cartons[18] + $cartons[19];
+                if ($ca != $nx) {
+                    $markes_number = $ca . " - " . $nx;
+                } else {
+                    $markes_number = $ca;
+                }
+                array_push($markes_numbers, $markes_number);
+            }
+            if ($n == 21) {
+                $ca = $cartons[0] + $cartons[1] + $cartons[2] + $cartons[3] + $cartons[4] + $cartons[5] + $cartons[6] + $cartons[7] + $cartons[8] + $cartons[9] + $cartons[10] + $cartons[11] + $cartons[12] + $cartons[13] + $cartons[14] + $cartons[15] + $cartons[16] + $cartons[17] + $cartons[18] + $cartons[19] + 1;
+                $nx = $cartons[0] + $cartons[1] + $cartons[2] + $cartons[3] + $cartons[4] + $cartons[5] + $cartons[6] + $cartons[7] + $cartons[8] + $cartons[9] + $cartons[10] + $cartons[11] + $cartons[12] + $cartons[13] + $cartons[14] + $cartons[15] + $cartons[16] + $cartons[17] + $cartons[18] + $cartons[19] + $cartons[20];
+                if ($ca != $nx) {
+                    $markes_number = $ca . " - " . $nx;
+                } else {
+                    $markes_number = $ca;
+                }
+                array_push($markes_numbers, $markes_number);
+            }
+
+            if ($n == 22) {
+                $ca = $cartons[0] + $cartons[1] + $cartons[2] + $cartons[3] + $cartons[4] + $cartons[5] + $cartons[6] + $cartons[7] + $cartons[8] + $cartons[9] + $cartons[10] + $cartons[11] + $cartons[12] + $cartons[13] + $cartons[14] + $cartons[15] + $cartons[16] + $cartons[17] + $cartons[18] + $cartons[19] + $cartons[20] + 1;
+                $nx = $cartons[0] + $cartons[1] + $cartons[2] + $cartons[3] + $cartons[4] + $cartons[5] + $cartons[6] + $cartons[7] + $cartons[8] + $cartons[9] + $cartons[10] + $cartons[11] + $cartons[12] + $cartons[13] + $cartons[14] + $cartons[15] + $cartons[16] + $cartons[17] + $cartons[18] + $cartons[19] + $cartons[20] + $cartons[21];
+                if ($ca != $nx) {
+                    $markes_number = $ca . " - " . $nx;
+                } else {
+                    $markes_number = $ca;
+                }
+                array_push($markes_numbers, $markes_number);
+            }
+
+
+            if ($n == 23) {
+                $ca = $cartons[0] + $cartons[1] + $cartons[2] + $cartons[3] + $cartons[4] + $cartons[5] + $cartons[6] + $cartons[7] + $cartons[8] + $cartons[9] + $cartons[10] + $cartons[11] + $cartons[12] + $cartons[13] + $cartons[14] + $cartons[15] + $cartons[16] + $cartons[17] + $cartons[18] + $cartons[19] + $cartons[20] + $cartons[21] + 1;
+                $nx = $cartons[0] + $cartons[1] + $cartons[2] + $cartons[3] + $cartons[4] + $cartons[5] + $cartons[6] + $cartons[7] + $cartons[8] + $cartons[9] + $cartons[10] + $cartons[11] + $cartons[12] + $cartons[13] + $cartons[14] + $cartons[15] + $cartons[16] + $cartons[17] + $cartons[18] + $cartons[19] + $cartons[20] + $cartons[21] + $cartons[22];
+                if ($ca != $nx) {
+                    $markes_number = $ca . " - " . $nx;
+                } else {
+                    $markes_number = $ca;
+                }
+                array_push($markes_numbers, $markes_number);
+            }
+
+            if ($n == 24) {
+                $ca = $cartons[0] + $cartons[1] + $cartons[2] + $cartons[3] + $cartons[4] + $cartons[5] + $cartons[6] + $cartons[7] + $cartons[8] + $cartons[9] + $cartons[10] + $cartons[11] + $cartons[12] + $cartons[13] + $cartons[14] + $cartons[15] + $cartons[16] + $cartons[17] + $cartons[18] + $cartons[19] + $cartons[20] + $cartons[21] + $cartons[22] + 1;
+                $nx = $cartons[0] + $cartons[1] + $cartons[2] + $cartons[3] + $cartons[4] + $cartons[5] + $cartons[6] + $cartons[7] + $cartons[8] + $cartons[9] + $cartons[10] + $cartons[11] + $cartons[12] + $cartons[13] + $cartons[14] + $cartons[15] + $cartons[16] + $cartons[17] + $cartons[18] + $cartons[19] + $cartons[20] + $cartons[21] + $cartons[22] + $cartons[23];
+                if ($ca != $nx) {
+                    $markes_number = $ca . " - " . $nx;
+                } else {
+                    $markes_number = $ca;
+                }
+                array_push($markes_numbers, $markes_number);
+            }
+            if ($n == 25) {
+                $ca = $cartons[0] + $cartons[1] + $cartons[2] + $cartons[3] + $cartons[4] + $cartons[5] + $cartons[6] + $cartons[7] + $cartons[8] + $cartons[9] + $cartons[10] + $cartons[11] + $cartons[12] + $cartons[13] + $cartons[14] + $cartons[15] + $cartons[16] + $cartons[17] + $cartons[18] + $cartons[19] + $cartons[20] + $cartons[21] + $cartons[22] + $cartons[23] + 1;
+                $nx = $cartons[0] + $cartons[1] + $cartons[2] + $cartons[3] + $cartons[4] + $cartons[5] + $cartons[6] + $cartons[7] + $cartons[8] + $cartons[9] + $cartons[10] + $cartons[11] + $cartons[12] + $cartons[13] + $cartons[14] + $cartons[15] + $cartons[16] + $cartons[17] + $cartons[18] + $cartons[19] + $cartons[20] + $cartons[21] + $cartons[22] + $cartons[23] + $cartons[24];
+                if ($ca != $nx) {
+                    $markes_number = $ca . " - " . $nx;
+                } else {
+                    $markes_number = $ca;
+                }
+                array_push($markes_numbers, $markes_number);
+            }
+            if ($n == 26) {
+                $ca = $cartons[0] + $cartons[1] + $cartons[2] + $cartons[3] + $cartons[4] + $cartons[5] + $cartons[6] + $cartons[7] + $cartons[8] + $cartons[9] + $cartons[10] + $cartons[11] + $cartons[12] + $cartons[13] + $cartons[14] + $cartons[15] + $cartons[16] + $cartons[17] + $cartons[18] + $cartons[19] + $cartons[20] + $cartons[21] + $cartons[22] + $cartons[23] + $cartons[24] + 1;
+                $nx = $cartons[0] + $cartons[1] + $cartons[2] + $cartons[3] + $cartons[4] + $cartons[5] + $cartons[6] + $cartons[7] + $cartons[8] + $cartons[9] + $cartons[10] + $cartons[11] + $cartons[12] + $cartons[13] + $cartons[14] + $cartons[15] + $cartons[16] + $cartons[17] + $cartons[18] + $cartons[19] + $cartons[20] + $cartons[21] + $cartons[22] + $cartons[23] + $cartons[24] + $cartons[25];
+                if ($ca != $nx) {
+                    $markes_number = $ca . " - " . $nx;
+                } else {
+                    $markes_number = $ca;
+                }
+                array_push($markes_numbers, $markes_number);
+            }
+            if ($n == 27) {
+                $ca = $cartons[0] + $cartons[1] + $cartons[2] + $cartons[3] + $cartons[4] + $cartons[5] + $cartons[6] + $cartons[7] + $cartons[8] + $cartons[9] + $cartons[10] + $cartons[11] + $cartons[12] + $cartons[13] + $cartons[14] + $cartons[15] + $cartons[16] + $cartons[17] + $cartons[18] + $cartons[19] + $cartons[20] + $cartons[21] + $cartons[22] + $cartons[23] + $cartons[24] + $cartons[25] + 1;
+                $nx = $cartons[0] + $cartons[1] + $cartons[2] + $cartons[3] + $cartons[4] + $cartons[5] + $cartons[6] + $cartons[7] + $cartons[8] + $cartons[9] + $cartons[10] + $cartons[11] + $cartons[12] + $cartons[13] + $cartons[14] + $cartons[15] + $cartons[16] + $cartons[17] + $cartons[18] + $cartons[19] + $cartons[20] + $cartons[21] + $cartons[22] + $cartons[23] + $cartons[24] + $cartons[25] + $cartons[26];
+                if ($ca != $nx) {
+                    $markes_number = $ca . " - " . $nx;
+                } else {
+                    $markes_number = $ca;
+                }
+                array_push($markes_numbers, $markes_number);
+            }
+
+            if ($n == 28) {
+                $ca = $cartons[0] + $cartons[1] + $cartons[2] + $cartons[3] + $cartons[4] + $cartons[5] + $cartons[6] + $cartons[7] + $cartons[8] + $cartons[9] + $cartons[10] + $cartons[11] + $cartons[12] + $cartons[13] + $cartons[14] + $cartons[15] + $cartons[16] + $cartons[17] + $cartons[18] + $cartons[19] + $cartons[20] + $cartons[21] + $cartons[22] + $cartons[23] + $cartons[24] + $cartons[25] + $cartons[26] + 1;
+                $nx = $cartons[0] + $cartons[1] + $cartons[2] + $cartons[3] + $cartons[4] + $cartons[5] + $cartons[6] + $cartons[7] + $cartons[8] + $cartons[9] + $cartons[10] + $cartons[11] + $cartons[12] + $cartons[13] + $cartons[14] + $cartons[15] + $cartons[16] + $cartons[17] + $cartons[18] + $cartons[19] + $cartons[20] + $cartons[21] + $cartons[22] + $cartons[23] + $cartons[24] + $cartons[25] + $cartons[26] + $cartons[27];
+                if ($ca != $nx) {
+                    $markes_number = $ca . " - " . $nx;
+                } else {
+                    $markes_number = $ca;
+                }
+                array_push($markes_numbers, $markes_number);
+            }
+
+            if ($n == 29) {
+                $ca = $cartons[0] + $cartons[1] + $cartons[2] + $cartons[3] + $cartons[4] + $cartons[5] + $cartons[6] + $cartons[7] + $cartons[8] + $cartons[9] + $cartons[10] + $cartons[11] + $cartons[12] + $cartons[13] + $cartons[14] + $cartons[15] + $cartons[16] + $cartons[17] + $cartons[18] + $cartons[19] + $cartons[20] + $cartons[21] + $cartons[22] + $cartons[23] + $cartons[24] + $cartons[25] + $cartons[26] + $cartons[27] + 1;
+                $nx = $cartons[0] + $cartons[1] + $cartons[2] + $cartons[3] + $cartons[4] + $cartons[5] + $cartons[6] + $cartons[7] + $cartons[8] + $cartons[9] + $cartons[10] + $cartons[11] + $cartons[12] + $cartons[13] + $cartons[14] + $cartons[15] + $cartons[16] + $cartons[17] + $cartons[18] + $cartons[19] + $cartons[20] + $cartons[21] + $cartons[22] + $cartons[23] + $cartons[24] + $cartons[25] + $cartons[26] + $cartons[27] + $cartons[28];
+                if ($ca != $nx) {
+                    $markes_number = $ca . " - " . $nx;
+                } else {
+                    $markes_number = $ca;
+                }
+                array_push($markes_numbers, $markes_number);
+            }
+
+            if ($n == 30) {
+                $ca = $cartons[0] + $cartons[1] + $cartons[2] + $cartons[3] + $cartons[4] + $cartons[5] + $cartons[6] + $cartons[7] + $cartons[8] + $cartons[9] + $cartons[10] + $cartons[11] + $cartons[12] + $cartons[13] + $cartons[14] + $cartons[15] + $cartons[16] + $cartons[17] + $cartons[18] + $cartons[19] + $cartons[20] + $cartons[21] + $cartons[22] + $cartons[23] + $cartons[24] + $cartons[25] + $cartons[26] + $cartons[27] + $cartons[28] + 1;
+                $nx = $cartons[0] + $cartons[1] + $cartons[2] + $cartons[3] + $cartons[4] + $cartons[5] + $cartons[6] + $cartons[7] + $cartons[8] + $cartons[9] + $cartons[10] + $cartons[11] + $cartons[12] + $cartons[13] + $cartons[14] + $cartons[15] + $cartons[16] + $cartons[17] + $cartons[18] + $cartons[19] + $cartons[20] + $cartons[21] + $cartons[22] + $cartons[23] + $cartons[24] + $cartons[25] + $cartons[26] + $cartons[27] + $cartons[28] + $cartons[29];
+                if ($ca != $nx) {
+                    $markes_number = $ca . " - " . $nx;
+                } else {
+                    $markes_number = $ca;
+                }
+                array_push($markes_numbers, $markes_number);
+            }
             $n = $n + 1;
         }
+*/
+
+
+        // 商品番号とカートン数の取得
+        $cartons = [];
+        $data = Order_detail::where('order_no', $order_number)->get();
+        foreach ($data as $line) {
+            array_push($cartons, $line->ctn);
+        }
+
+        // --- ここから修正：無制限対応ロジック ---
+        $markes_numbers = [];
+        $current_total = 0; // 現在までの累計カートン数
+
+        foreach ($cartons as $cc) {
+            $start_no = $current_total + 1;      // 開始番号
+            $end_no = $current_total + $cc;     // 終了番号（累計）
+
+            if ($start_no == $end_no) {
+                // カートン数が1つの場合 (例: "5")
+                $markes_number = $start_no;
+            } else {
+                // カートン数が複数の場合 (例: "1 - 5")
+                $markes_number = $start_no . " - " . $end_no;
+            }
+
+            array_push($markes_numbers, $markes_number);
+
+            // 次のループのために、今回のカートン数を累計に加算する
+            $current_total += $cc;
+        }
+        // --- ここまで ---
+
+
 
         $data = Order_detail::where('order_no', $order_number)->get();
         $x = 0;
+
         foreach ($data as $line) {
             $line->marks_no = $markes_numbers[$x];
             $line->save();
             $x += 1;
         }
+
+
+
+
+
 
 
         //packing list PDF
@@ -1222,9 +1717,8 @@ class OrderController extends Controller
             'items' => $items
         ];
         //メール
-        if(Session::has('impersonating') != null) {
-            
-        }else{
+        if (Session::has('impersonating') != null) {
+        } else {
             Mail::to($to)->bcc($bcc)->send(new ThanksMail($content, $subject, $items));
         }
 
@@ -1300,17 +1794,14 @@ class OrderController extends Controller
                 copy($from, $to);
                 */
 
-$from = storage_path('app/public/order/' . $file_name);
-$to   = '/home/r2325683/ccmapp/public/storage/order/' . $file_name;
+                $from = storage_path('app/public/order/' . $file_name);
+                $to   = '/home/r2325683/ccmapp/public/storage/order/' . $file_name;
 
-if (file_exists($from)) {
-    copy($from, $to);
-} else {
-    Log::error("ファイルが存在しません: {$from}");
-}
-
-
-
+                if (file_exists($from)) {
+                    copy($from, $to);
+                } else {
+                    Log::error("ファイルが存在しません: {$from}");
+                }
             }
 
             return view('payment_upload', compact('order_number', 'payment_method', 'file_name', 'invoice_no', 'directory_path'));
@@ -1335,9 +1826,8 @@ if (file_exists($from)) {
             'contents' => Emailtext::Find(1)->contents_2,
         ];
         //メール
-        if(Session::has('impersonating') != null) {
-            
-        }else{
+        if (Session::has('impersonating') != null) {
+        } else {
             Mail::to($to)->bcc($bcc)->send(new PaymentImageMail($content, $subject));
         }
 
@@ -1427,9 +1917,8 @@ if (file_exists($from)) {
         $to = $users->email;
         $content = "ここに本文";
         //メール送信処理
-        if(Session::has('impersonating') != null) {
-            
-        }else{
+        if (Session::has('impersonating') != null) {
+        } else {
             Mail::to($to)->send(new ThanksMail($content));
         }
     }
@@ -1513,8 +2002,5 @@ if (file_exists($from)) {
         return redirect(asset($pdf_name));
     }
 
-    public function ShowPackinglist(Request $request)
-    {
-    }
-
+    public function ShowPackinglist(Request $request) {}
 }

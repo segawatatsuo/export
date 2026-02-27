@@ -3,6 +3,13 @@
 
 @section('content')
 
+
+@if (session('error_message'))
+    <div class="alert alert-danger text-center">
+        {{ session('error_message') }}
+    </div>
+@endif
+
     <div class="container-fluid" style="padding:0;">
 
         <div class="container mt-1 mb-1">
@@ -108,10 +115,7 @@
                             <br>
 
                             @if (isset($hoge->invoices->order_confirms->payment_method))
-                                <a
-                                    href="{{ route('order_confirm', ['quotation_no' => $hoge->invoices->order_confirms->quotation_no, 'payment_method' => $hoge->invoices->order_confirms->payment_method]) }}">
-                                    order
-                                </a>
+                                <a href="{{ route('order_confirm', ['quotation_no' => $hoge->invoices->order_confirms->quotation_no, 'payment_method' => $hoge->invoices->order_confirms->payment_method]) }}">order</a>
                             @endif
                             <br>
 
@@ -121,6 +125,7 @@
                                     payment
                                 </a>
                             @endif
+
 
                         </td>
                         <td style="width: 15%">
